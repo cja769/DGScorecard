@@ -16,6 +16,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".NewScorecard"
+            android:label="@string/title_activity_new_scorecard" >
+        </activity>
+        <activity
+            android:name=".ScorecardActivity"
+            android:label="@string/title_activity_scorecard" >
+        </activity>
     </application>
 
 </manifest>
