@@ -1,17 +1,31 @@
 package dgs.dgscorecard;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 
 public class CourseSelect extends ActionBarActivity {
+
+    private String course;
+    public static final String EXTRA_MESSAGE = "Course";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_select);
+
+        final Button button = (Button) findViewById(R.id.cs_start);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                sendMessage(v);
+            }
+        });
     }
 
 
@@ -35,5 +49,15 @@ public class CourseSelect extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void sendMessage(View view) {
+        Intent intent = new Intent(this, ScorecardActivity.class);
+        EditText courseEditText = (EditText)findViewById(R.id.cs_course_name);
+        intent.putExtra(EXTRA_MESSAGE, courseEditText.getText().toString());
+        intent.putExtra(PlayerSelect.EXTRA_MESSAGE, getIntent().getStringExtra(PlayerSelect.EXTRA_MESSAGE));
+        startActivity(intent);
+
+
     }
 }

@@ -74,7 +74,7 @@
             android:orientation="horizontal"
             android:weightSum="1"
             android:gravity="center_vertical|start"
-            android:layout_weight=".5">
+            android:layout_weight=".6">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -82,7 +82,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="Name"
                 android:id="@+id/sc_name"
-                android:textSize="40dp" />
+                android:textSize="30dp" />
 
         </LinearLayout>
 
@@ -92,14 +92,14 @@
             android:orientation="horizontal"
             android:weightSum="1"
             android:gravity="right"
-            android:layout_weight=".5">
+            android:layout_weight=".4">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:weightSum="1"
-                android:gravity="end">
+                android:gravity="center_horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -107,13 +107,14 @@
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="Score"
                     android:id="@+id/sc_score"
-                    android:textSize="25dp" />
+                    android:textSize="15dp"
+                    android:labelFor="@+id/sc_score_picker" />
 
                 <NumberPicker
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/numberPicker5"
-                    android:orientation="vertical" >
+                    android:id="@+id/sc_score_picker"
+                    android:orientation="vertical">
 
                 </NumberPicker>
 
@@ -124,7 +125,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:weightSum="1"
-                android:gravity="end">
+                android:gravity="center_horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -132,16 +133,41 @@
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="Putts"
                     android:id="@+id/sc_putts"
-                    android:textSize="25dp" />
+                    android:textSize="15dp"
+                    android:labelFor="@+id/sc_putt_picker" />
 
                 <NumberPicker
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/numberPicker2"
+                    android:id="@+id/sc_putt_picker"
                     android:orientation="vertical" >
 
                 </NumberPicker>
+
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:orientation="vertical"
+                android:weightSum="1"
+                android:gravity="center_vertical|center_horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="55"
+                    android:id="@+id/sc_total_score" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="(-1)"
+                    android:id="@+id/sc_plus_minus" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>
