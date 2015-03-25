@@ -6,5 +6,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_new_scorecard">NewScorecard</string>
     <string name="title_activity_scorecard">ScorecardActivity</string>
+    <string name="title_activity_player_select">PlayerSelect</string>
+    <string name="title_activity_course_select">CourseSelect</string>
 
 </resources>

@@ -24,7 +24,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:weightSum="1">
+        android:weightSum="1"
+        android:gravity="right">
 
         <Button
             style="?android:attr/buttonStyleSmall"
@@ -32,16 +33,14 @@
             android:layout_height="wrap_content"
             android:text="&lt;"
             android:id="@+id/sc_back"
-            android:layout_gravity="bottom|right|top"
-            android:layout_weight=".5" />
+            android:layout_gravity="bottom|right|top" />
 
         <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=">"
-            android:id="@+id/sc_forward"
-            android:layout_weight="0.5" />
+            android:id="@+id/sc_forward" />
 
     </LinearLayout>
 
@@ -63,12 +62,88 @@
         android:layout_gravity="right"
         android:textSize="30dp" />
 
-    <NumberPicker
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/numberPicker"
-        android:layout_gravity="right"
-        android:orientation="vertical"
-        android:layout_marginTop="10dp" />
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            android:gravity="center_vertical|start"
+            android:layout_weight=".5">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Name"
+                android:id="@+id/sc_name"
+                android:textSize="40dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            android:gravity="right"
+            android:layout_weight=".5">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:weightSum="1"
+                android:gravity="end">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Score"
+                    android:id="@+id/sc_score"
+                    android:textSize="25dp" />
+
+                <NumberPicker
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/numberPicker5"
+                    android:orientation="vertical" >
+
+                </NumberPicker>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:weightSum="1"
+                android:gravity="end">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Putts"
+                    android:id="@+id/sc_putts"
+                    android:textSize="25dp" />
+
+                <NumberPicker
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/numberPicker2"
+                    android:orientation="vertical" >
+
+                </NumberPicker>
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -17,12 +17,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".NewScorecard"
-            android:label="@string/title_activity_new_scorecard" >
-        </activity>
-        <activity
             android:name=".ScorecardActivity"
             android:label="@string/title_activity_scorecard" >
+        </activity>
+        <activity
+            android:name=".PlayerSelect"
+            android:label="@string/title_activity_player_select" >
+        </activity>
+        <activity
+            android:name=".CourseSelect"
+            android:label="@string/title_activity_course_select" >
         </activity>
     </application>
 
