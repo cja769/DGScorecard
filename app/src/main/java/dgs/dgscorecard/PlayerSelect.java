@@ -7,23 +7,34 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+
+import java.util.ArrayList;
 
 
 public class PlayerSelect extends ActionBarActivity {
 
     private String name;
-    public static final String EXTRA_MESSAGE = "Name";
+    public static final String EXTRA_MESSAGE = "Players";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player_select);
 
-        final Button button = (Button) findViewById(R.id.ps_next);
-        button.setOnClickListener(new View.OnClickListener() {
+        final Button nextButton = (Button) findViewById(R.id.ps_next);
+        nextButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 sendMessage(v);
+            }
+        });
+
+        final Button addButton = (Button) findViewById(R.id.ps_add);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                addPlayerToList();
             }
         });
     }
@@ -50,10 +61,30 @@ public class PlayerSelect extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    public void sendMessage(View view) {
-        Intent intent = new Intent(this, CourseSelect.class);
+
+    private void addPlayerToList(){
         EditText nameEditText = (EditText)findViewById(R.id.ps_enter_name);
-        intent.putExtra(EXTRA_MESSAGE, nameEditText.getText().toString());
+        LinearLayout ll = (LinearLayout) findViewById(R.id.ps_checkbox_field);
+        String newName = nameEditText.getText().toString();
+        CheckBox cb = new CheckBox(this);
+        cb.setText(newName);
+        cb.setChecked(true);
+        ll.addView(cb);
+        nameEditText.setText("");
+
+    }
+
+    private void sendMessage(View view) {
+        Intent intent = new Intent(this, CourseSelect.class);
+        LinearLayout ll = (LinearLayout) findViewById(R.id.ps_checkbox_field);
+        int numOfBoxes = ll.getChildCount();
+        ArrayList<String> players = new ArrayList<String>();
+        for(int i = 0; i < numOfBoxes; i++){
+            CheckBox cb = (CheckBox) ll.getChildAt(i);
+            if(cb.isChecked())
+                players.add(cb.getText().toString());
+        }
+        intent.putStringArrayListExtra(EXTRA_MESSAGE, players);
         startActivity(intent);
 
     }

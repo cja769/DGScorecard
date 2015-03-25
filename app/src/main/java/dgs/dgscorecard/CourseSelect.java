@@ -55,7 +55,7 @@ public class CourseSelect extends ActionBarActivity {
         Intent intent = new Intent(this, ScorecardActivity.class);
         EditText courseEditText = (EditText)findViewById(R.id.cs_course_name);
         intent.putExtra(EXTRA_MESSAGE, courseEditText.getText().toString());
-        intent.putExtra(PlayerSelect.EXTRA_MESSAGE, getIntent().getStringExtra(PlayerSelect.EXTRA_MESSAGE));
+        intent.putStringArrayListExtra(PlayerSelect.EXTRA_MESSAGE, getIntent().getStringArrayListExtra(PlayerSelect.EXTRA_MESSAGE));
         startActivity(intent);
 
 

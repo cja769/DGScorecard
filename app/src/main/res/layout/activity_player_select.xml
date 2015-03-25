@@ -18,16 +18,54 @@
         android:textAlignment="gravity"
         android:gravity="center|center_horizontal" />
 
-    <EditText
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight=".4">
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapWords"
+                android:ems="10"
+                android:id="@+id/ps_enter_name"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="100dp"
+                android:layout_marginBottom="100dp"
+                android:hint="Enter Player Name" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight=".8"
+            android:gravity="center_vertical|center_horizontal"
+            android:id="@+id/ps_add_linear_layout">
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Add"
+                android:id="@+id/ps_add" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textCapWords"
-        android:ems="10"
-        android:id="@+id/ps_enter_name"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="100dp"
-        android:layout_marginBottom="100dp"
-        android:hint="Enter Player Name" />
+        android:gravity="start"
+        android:id="@+id/ps_checkbox_field">
+
+    </LinearLayout>
 
     <Button
         android:layout_width="210dp"

@@ -1,5 +1,6 @@
 package dgs.dgscorecard;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,29 +9,29 @@ import java.util.Map;
  */
 public class Scorecard {
 
-    private Map<Player, int[]> mScores;
-    private Map<Player, int[]> mPutts;
+    private Map<Player, ArrayList<Integer>> mScores;
+    private Map<Player, ArrayList<Integer>> mPutts;
     private Course mCourse;
-    private Player[] mPlayers;
+    private ArrayList<Player> mPlayers;
 
 
     public Scorecard () {
-        mScores = new HashMap<Player, int[]>();
-        mPutts = new HashMap<Player, int[]>();
+        mScores = new HashMap<Player, ArrayList<Integer>>();
+        mPutts = new HashMap<Player, ArrayList<Integer>>();
         mCourse = new Course();
     }
 
     public Scorecard (Course course) {
-        mScores = new HashMap<Player, int[]>();
-        mPutts = new HashMap<Player, int[]>();
+        mScores = new HashMap<Player, ArrayList<Integer>>();
+        mPutts = new HashMap<Player, ArrayList<Integer>>();
         mCourse = course;
     }
 
-    public Map<Player, int[]> getScores() {
+    public Map<Player, ArrayList<Integer>> getScores() {
         return mScores;
     }
 
-    public Map<Player, int[]> getPutts() {
+    public Map<Player, ArrayList<Integer>> getPutts() {
         return mPutts;
     }
 
@@ -38,15 +39,15 @@ public class Scorecard {
         return mCourse;
     }
 
-    public Player[] getPlayers() {
+    public ArrayList<Player> getPlayers() {
         return mPlayers;
     }
 
-    public void setScores(Map<Player, int[]> mScores) {
+    public void setScores(Map<Player, ArrayList<Integer>> mScores) {
         this.mScores = mScores;
     }
 
-    public void setPutts(Map<Player, int[]> mPutts) {
+    public void setPutts(Map<Player, ArrayList<Integer>> mPutts) {
         this.mPutts = mPutts;
     }
 
@@ -54,20 +55,22 @@ public class Scorecard {
         mCourse = course;
     }
 
-    public void setPlayers(Player[] players){
+    public void setPlayers(ArrayList<Player> players){
         mPlayers = players;
         for(Player player: players){
-            int[] s = new int[mCourse.getNumHoles()];
+            ArrayList<Integer> s = new ArrayList<Integer>(mCourse.getNumHoles());
             for(int i = 0; i < mCourse.getNumHoles(); i++)
-                s[i] = mCourse.getPars()[i];
+                s.add(mCourse.getPars().get(i));
             mScores.put(player, s);
-            int[] l = new int[mCourse.getNumHoles()];
+            ArrayList<Integer> l = new ArrayList<Integer>(mCourse.getNumHoles());
+            for(int i = 0; i < mCourse.getNumHoles(); i++)
+                l.add(0);
             mPutts.put(player, l);
         }
     }
 
     public int calculateTotal(Player player){
-        int[] scores = mScores.get(player);
+        ArrayList<Integer> scores = mScores.get(player);
         int total = 0;
         for(int s: scores)
             total += s;
