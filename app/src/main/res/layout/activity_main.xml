@@ -24,4 +24,11 @@
         android:id="@+id/main_new_scorecard"
         android:layout_gravity="center_horizontal" />
 
+    <Button
+        android:layout_width="210dp"
+        android:layout_height="wrap_content"
+        android:text="Add Course"
+        android:id="@+id/main_add_course"
+        android:layout_gravity="center_horizontal" />
+
 </LinearLayout>

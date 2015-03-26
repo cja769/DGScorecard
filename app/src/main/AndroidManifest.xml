@@ -23,11 +23,16 @@
         <activity
             android:name=".PlayerSelect"
             android:label="@string/title_activity_player_select"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
             android:name=".CourseSelect"
             android:label="@string/title_activity_course_select" >
+        </activity>
+        <activity
+            android:name=".ManualCourseAdd"
+            android:label="@string/title_activity_manual_course_add"
+            android:windowSoftInputMode="adjustPan">
         </activity>
     </application>
 

@@ -38,12 +38,13 @@ public class ScorecardActivity extends ActionBarActivity {
         Intent intent = getIntent();
         String courseName = intent.getStringExtra(CourseSelect.EXTRA_MESSAGE);
         ArrayList<String> playerName = intent.getStringArrayListExtra(PlayerSelect.EXTRA_MESSAGE);
+        ArrayList<Integer> pars = intent.getIntegerArrayListExtra(ManualCourseAdd.EXTRA_MESSAGE);
         Log.v("Course", courseName);
         String str = "[";
-        for(String s: playerName)
+        for(Integer s: pars)
             str += s + " ";
         str += "]";
-        Log.v("Players", str);
+        Log.v("Pars", str);
         TextView course = (TextView) findViewById(R.id.sc_course_name);
 
         hole = (TextView) findViewById(R.id.sc_hole_number);
@@ -51,6 +52,7 @@ public class ScorecardActivity extends ActionBarActivity {
 
         mScorecard = new Scorecard();
         mScorecard.getCourse().setName(courseName);
+        mScorecard.getCourse().setPars(pars);
         ArrayList<Player> pArraylist = new ArrayList<Player>();
         for(String s: playerName){
             Player p = new Player(s);

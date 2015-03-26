@@ -16,10 +16,17 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final Button button = (Button) findViewById(R.id.main_new_scorecard);
-        button.setOnClickListener(new View.OnClickListener() {
+        final Button newCardButton = (Button) findViewById(R.id.main_new_scorecard);
+        newCardButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                sendMessage(v);
+                sendMessage(PlayerSelect.class);
+            }
+        });
+
+        final Button addCourseButton = (Button) findViewById(R.id.main_add_course);
+        addCourseButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                sendMessage(ManualCourseAdd.class);
             }
         });
     }
@@ -47,8 +54,8 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void sendMessage(View view) {
-        Intent intent = new Intent(this, PlayerSelect.class);
+    public void sendMessage(Class c) {
+        Intent intent = new Intent(this, c);
         startActivity(intent);
     }
 }

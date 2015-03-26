@@ -34,6 +34,7 @@ public class Course {
 
     public void setPars(ArrayList<Integer> pars){
         mPars = pars;
+        mNumHoles = pars.size();
         calculatePar();
     }
 
