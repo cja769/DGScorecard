@@ -22,7 +22,8 @@
         </activity>
         <activity
             android:name=".PlayerSelect"
-            android:label="@string/title_activity_player_select" >
+            android:label="@string/title_activity_player_select"
+            android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
             android:name=".CourseSelect"
