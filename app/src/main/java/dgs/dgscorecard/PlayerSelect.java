@@ -1,6 +1,7 @@
 package dgs.dgscorecard;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,17 +14,26 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 
 public class PlayerSelect extends ActionBarActivity {
 
     private String name;
     public static final String EXTRA_MESSAGE = "Players";
+    private SharedPreferences mPrefs;
+
+    ArrayList<String> prevPlayers = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player_select);
+
+        mPrefs = getSharedPreferences("PlayerSelect_prefs", MODE_PRIVATE);
+
+        //restore names
+        prevPlayers.addAll(mPrefs.getStringSet("PlayerSelect_prefs", new HashSet<String>()));
 
         final Button nextButton = (Button) findViewById(R.id.ps_next);
         nextButton.setOnClickListener(new View.OnClickListener() {
@@ -63,10 +73,22 @@ public class PlayerSelect extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onStop(){
+        super.onStop();
+
+        //Save Player Names
+        SharedPreferences.Editor ed = mPrefs.edit();
+        if(prevPlayers.size() > 0)
+            ed.putStringSet("mPlayerNames", new HashSet<String>(prevPlayers));
+        ed.apply();
+    }
+
     private void addPlayerToList(){
         EditText nameEditText = (EditText)findViewById(R.id.ps_enter_name);
         LinearLayout ll = (LinearLayout) findViewById(R.id.ps_checkbox_field);
         String newName = nameEditText.getText().toString();
+        prevPlayers.add(newName);
         CheckBox cb = new CheckBox(this);
         cb.setText(newName);
         cb.setChecked(true);
