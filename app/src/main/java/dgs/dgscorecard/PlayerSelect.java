@@ -1,5 +1,6 @@
 package dgs.dgscorecard;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
@@ -15,6 +16,7 @@ import android.widget.ScrollView;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 
 public class PlayerSelect extends ActionBarActivity {
@@ -24,6 +26,12 @@ public class PlayerSelect extends ActionBarActivity {
     private SharedPreferences mPrefs;
     private int num_players;
 
+    // database helper
+    private DGSDatabaseHelper mDatabaseHelper;
+
+    // database items list
+    private List<Player> mPlayer;
+
     //ArrayList<String> prevPlayers = new ArrayList<String>();
 
     @Override
@@ -31,10 +39,20 @@ public class PlayerSelect extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player_select);
 
+        mDatabaseHelper = new DGSDatabaseHelper(this);
+        mPlayer = mDatabaseHelper.getAllPlayerItems(this);
+
         mPrefs = getSharedPreferences("PlayerSelect_prefs", MODE_PRIVATE);
 
         //restore player count
         num_players = mPrefs.getInt("num_players", 0);
+        LinearLayout ll = (LinearLayout) findViewById(R.id.ps_checkbox_field);
+        for(int i = 0; i < mPlayer.size(); i++) {
+            CheckBox cb = new CheckBox(this);
+            cb.setText(mPlayer.get(i).getName());
+            cb.setChecked(false);
+            ll.addView(cb);
+        }
         //prevPlayers.addAll(mPrefs.getStringSet("PlayerSelect_prefs", new HashSet<String>()));
 
         final Button nextButton = (Button) findViewById(R.id.ps_next);
@@ -96,8 +114,13 @@ public class PlayerSelect extends ActionBarActivity {
         cb.setText(newName);
         cb.setChecked(true);
         ll.addView(cb);
+        System.out.println(newName);
+        Player newPlayer = new Player(newName, newName, "0", "0","0", "0", num_players, this);
         ++num_players;
-        System.out.println(num_players);
+        ArrayList<Player> players = new ArrayList<>();
+        players.add(newPlayer);
+        mDatabaseHelper.addItems(players);
+        //System.out.println(num_players);
         nameEditText.setText("");
 
     }

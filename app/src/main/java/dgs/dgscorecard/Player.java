@@ -1,5 +1,6 @@
 package dgs.dgscorecard;
 
+import android.content.Context;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
@@ -18,6 +19,10 @@ public class Player {
     private TextView totalScore;
     private TextView underOver;
 
+    public Player(String name){
+        mName = name;
+    }
+
 
     public Player(String name, int IDnumber){
         mName = name;
@@ -25,13 +30,18 @@ public class Player {
     }
 
 
-    public Player(String name, String nameF, String scoreF, String puttF, String totalS, String underO, int IDnumber){
+    public Player(String name, String nameF, String scoreF, String puttF, String totalS, String underO, int IDnumber, Context context){
         pID = IDnumber;
         mName = name;
-        nameField.setText(nameF);
+        nameField = new TextView(context);
+        nameField.setText(name);
+        scoreField = new NumberPicker(context);
         scoreField.setValue(Integer.parseInt(scoreF));
+        puttField = new NumberPicker(context);
         puttField.setValue(Integer.parseInt(puttF));
+        totalScore = new TextView(context);
         totalScore.setText(totalS);
+        underOver = new TextView(context);
         underOver.setText(underO);
     }
 

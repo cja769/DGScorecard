@@ -26,9 +26,9 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_NAME = "player_name";
     private static final String COLUMN_NAMEVIEW = "player_nameview";
-    private static final String COLUMN_SCORE= "player_score";
+    private static final String COLUMN_SCORE = "player_score";
     private static final String COLUMN_PUTTS = "player_putts";
-    private static final String COLUMN_TOTALSCORE= "player_totalscore";
+    private static final String COLUMN_TOTALSCORE = "player_totalscore";
     private static final String COLUMN_UNDEROVER = "player_underover";
     private static final String COLUMN_PID = "player_pid";
 
@@ -40,14 +40,14 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + PLAYER_ITEMS + "("
-                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + COLUMN_NAME + " TEXT UNIQUE NOT NULL,"
-                + COLUMN_NAMEVIEW + " TEXT UNIQUE NOT NULL,"
-                + COLUMN_SCORE + " LONG NOT NULL"
-                + COLUMN_PUTTS + " LONG NOT NULL"
-                + COLUMN_TOTALSCORE + " LONG NOT NULL"
-                + COLUMN_UNDEROVER + " LONG NOT NULL"
-                + COLUMN_PID + " LONG NOT NULL" +")");
+                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_NAME + " TEXT UNIQUE, "
+                + COLUMN_NAMEVIEW + " TEXT UNIQUE, "
+                + COLUMN_PUTTS + " LONG, "
+                + COLUMN_SCORE + " LONG, "
+                + COLUMN_TOTALSCORE + " LONG, "
+                + COLUMN_UNDEROVER + " LONG, "
+                + COLUMN_PID + " LONG" +")");
     }
 
     @Override
@@ -63,7 +63,7 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
     /**
      * retrieve all items from the database
      */
-    public List<Player> getAllPlayerItems() {
+    public List<Player> getAllPlayerItems(Context context) {
         // initialize the list
         List<Player> items = new ArrayList<Player>();
 
@@ -74,19 +74,20 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.query(PLAYER_ITEMS, new String[]{
                         COLUMN_NAME,
                         COLUMN_NAMEVIEW,
-                        COLUMN_SCORE,
                         COLUMN_PUTTS,
+                        COLUMN_SCORE,
                         COLUMN_TOTALSCORE,
                         COLUMN_UNDEROVER,
                         COLUMN_PID},
-                null, null, null, null, null, null); // get all rows
+                null, null, null, null, null, null
+        ); // get all rows
 
         if (cursor != null) {
             // add items to the list
             for (cursor.moveToFirst(); cursor.isAfterLast() == false; cursor.moveToNext()) {
                 items.add(new Player(cursor.getString(0), cursor.getString(1),
                         cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5),
-                        Integer.parseInt(cursor.getString(6))));
+                        Integer.parseInt(cursor.getString(6)), context));
             }
 
             // close the cursor
@@ -128,7 +129,7 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
             // prepare values
             ContentValues values = new ContentValues();
             values.put(COLUMN_SCORE, item.getValScore());
-            values.put(COLUMN_PUTTS, item.getValPutts());
+           // values.put(COLUMN_PUTTS, item.getValPutts());
             values.put(COLUMN_TOTALSCORE, item.getTextTScore());
             values.put(COLUMN_UNDEROVER, item.getTextUO());
 
