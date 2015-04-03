@@ -22,8 +22,9 @@ public class PlayerSelect extends ActionBarActivity {
     private String name;
     public static final String EXTRA_MESSAGE = "Players";
     private SharedPreferences mPrefs;
+    private int num_players;
 
-    ArrayList<String> prevPlayers = new ArrayList<String>();
+    //ArrayList<String> prevPlayers = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +33,9 @@ public class PlayerSelect extends ActionBarActivity {
 
         mPrefs = getSharedPreferences("PlayerSelect_prefs", MODE_PRIVATE);
 
-        //restore names
-        prevPlayers.addAll(mPrefs.getStringSet("PlayerSelect_prefs", new HashSet<String>()));
+        //restore player count
+        num_players = mPrefs.getInt("num_players", 0);
+        //prevPlayers.addAll(mPrefs.getStringSet("PlayerSelect_prefs", new HashSet<String>()));
 
         final Button nextButton = (Button) findViewById(R.id.ps_next);
         nextButton.setOnClickListener(new View.OnClickListener() {
@@ -79,8 +81,9 @@ public class PlayerSelect extends ActionBarActivity {
 
         //Save Player Names
         SharedPreferences.Editor ed = mPrefs.edit();
-        if(prevPlayers.size() > 0)
-            ed.putStringSet("mPlayerNames", new HashSet<String>(prevPlayers));
+        ed.putInt("num_players", num_players);
+        //if(prevPlayers.size() > 0)
+            //ed.putStringSet("mPlayerNames", new HashSet<String>(prevPlayers));
         ed.apply();
     }
 
@@ -88,11 +91,13 @@ public class PlayerSelect extends ActionBarActivity {
         EditText nameEditText = (EditText)findViewById(R.id.ps_enter_name);
         LinearLayout ll = (LinearLayout) findViewById(R.id.ps_checkbox_field);
         String newName = nameEditText.getText().toString();
-        prevPlayers.add(newName);
+        //prevPlayers.add(newName);
         CheckBox cb = new CheckBox(this);
         cb.setText(newName);
         cb.setChecked(true);
         ll.addView(cb);
+        ++num_players;
+        System.out.println(num_players);
         nameEditText.setText("");
 
     }
