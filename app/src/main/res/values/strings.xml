@@ -9,5 +9,6 @@
     <string name="title_activity_player_select">PlayerSelect</string>
     <string name="title_activity_course_select">CourseSelect</string>
     <string name="title_activity_manual_course_add">ManualCourseAdd</string>
+    <string name="title_activity_scorecard_summary">ScorecardSummary</string>
 
 </resources>

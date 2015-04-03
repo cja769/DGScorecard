@@ -22,7 +22,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:weightSum="1"
         android:gravity="right">
@@ -50,7 +50,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Hole"
         android:id="@+id/sc_hole_number"
-        android:textSize="30dp"
+        android:textSize="20dp"
         android:layout_marginLeft="30dp" />
 
     <TextView
@@ -60,7 +60,7 @@
         android:text="Par"
         android:id="@+id/sc_par"
         android:layout_gravity="right"
-        android:textSize="30dp" />
+        android:textSize="20dp" />
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -93,7 +93,7 @@
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="Name"
                         android:id="@+id/sc_name"
-                        android:textSize="30dp" />
+                        android:textSize="20dp" />
 
                 </LinearLayout>
 
@@ -123,7 +123,7 @@
 
                         <NumberPicker
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="59dp"
                             android:id="@+id/sc_score_picker"
                             android:orientation="vertical">
 
@@ -149,7 +149,7 @@
 
                         <NumberPicker
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="59dp"
                             android:id="@+id/sc_putt_picker"
                             android:orientation="vertical" >
 
