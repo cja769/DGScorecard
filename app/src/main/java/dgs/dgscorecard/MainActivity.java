@@ -29,6 +29,13 @@ public class MainActivity extends ActionBarActivity {
                 sendMessage(ManualCourseAdd.class);
             }
         });
+
+        final Button testSummary = (Button) findViewById(R.id.main_test_summary);
+        testSummary.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                sendMessage(ScorecardSummary.class);
+            }
+        });
     }
 
 
