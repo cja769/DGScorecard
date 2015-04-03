@@ -137,9 +137,11 @@ public class ManualCourseAdd extends ActionBarActivity {
                 @Override
                 public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                     parFields.get(picker).setText("Par " + newVal);
+                    Integer i = numPickerHoles.get(picker);
                     pars.put(numPickerHoles.get(picker), newVal);
                 }
             });
+            numPickerHoles.put(np,startHoleNumber);
             parent.removeView(singleHole);
             ll.addView(singleHole);
             startHoleNumber++;
@@ -153,8 +155,11 @@ public class ManualCourseAdd extends ActionBarActivity {
         int[] k = new int[keys.size()];
         int i = 0;
         for(Integer key: keys){
-            k[i] = key.intValue();
-            i++;
+
+            if(key != null) {
+                k[i] = key.intValue();
+                i++;
+            }
         }
         Arrays.sort(k);
         ArrayList<Integer> allPars = new ArrayList<Integer>();
