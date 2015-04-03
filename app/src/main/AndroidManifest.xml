@@ -32,7 +32,11 @@
         <activity
             android:name=".ManualCourseAdd"
             android:label="@string/title_activity_manual_course_add"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <activity
+            android:name=".ScorecardSummary"
+            android:label="@string/title_activity_scorecard_summary" >
         </activity>
     </application>
 
