@@ -10,6 +10,7 @@ import android.widget.TextView;
  */
 public class Player {
 
+    private int pID;
     private String mName;
     private TextView nameField;
     private NumberPicker scoreField;
@@ -17,8 +18,21 @@ public class Player {
     private TextView totalScore;
     private TextView underOver;
 
-    public Player(String name){
+
+    public Player(String name, int IDnumber){
         mName = name;
+        pID = IDnumber;
+    }
+
+
+    public Player(String name, String nameF, String scoreF, String puttF, String totalS, String underO, int IDnumber){
+        pID = IDnumber;
+        mName = name;
+        nameField.setText(nameF);
+        scoreField.setValue(Integer.parseInt(scoreF));
+        puttField.setValue(Integer.parseInt(puttF));
+        totalScore.setText(totalS);
+        underOver.setText(underO);
     }
 
     public TextView getNameField() {
@@ -68,5 +82,12 @@ public class Player {
     public void setName(String mName) {
         this.mName = mName;
     }
+
+    public String getTextNameF() {return nameField.getText().toString();}
+    public String getTextTScore() {return totalScore.getText().toString();}
+    public String getTextUO() {return underOver.getText().toString();}
+    public String getValScore() {return Integer.toString(scoreField.getValue());}
+    public String getValPutts() {return Integer.toString(puttField.getValue());}
+    public String getPID() {return Integer.toString(pID);}
 
 }
