@@ -9,27 +9,33 @@ import android.view.View;
 import android.widget.Button;
 
 
-public class MainActivity extends ActionBarActivity {
+public class TempFinish extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_temp_finish);
 
-        final Button newCardButton = (Button) findViewById(R.id.main_new_scorecard);
-        newCardButton.setOnClickListener(new View.OnClickListener() {
+        final Button finishButton = (Button) findViewById(R.id.tf_new_scorecard);
+        finishButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 sendMessage(PlayerSelect.class);
             }
         });
 
+        final Button mainButton = (Button) findViewById(R.id.tf_main);
+        mainButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                sendMessage(MainActivity.class);
+            }
+        });
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_temp_finish, menu);
         return true;
     }
 

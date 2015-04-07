@@ -95,7 +95,7 @@ public class ScorecardActivity extends ActionBarActivity {
                     setViewElements();
                 }
                 else {
-                    // showSummary();
+                    sendMessage(TempFinish.class);
                 }
             }
         });
@@ -108,6 +108,13 @@ public class ScorecardActivity extends ActionBarActivity {
                     mCurrentHole--;
                     setViewElements();
                 }
+            }
+        });
+
+        final Button finishButton = (Button) findViewById(R.id.sc_finish);
+        finishButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                sendMessage(TempFinish.class);
             }
         });
 
@@ -182,7 +189,10 @@ public class ScorecardActivity extends ActionBarActivity {
 
        }
 
+    }
 
-
+    public void sendMessage(Class c) {
+        Intent intent = new Intent(this, c);
+        startActivity(intent);
     }
 }
