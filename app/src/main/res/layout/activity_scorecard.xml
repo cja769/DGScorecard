@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:weightSum="1">
 
-    <TextView
+    <me.grantland.widget.AutofitTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -18,7 +18,8 @@
         android:textSize="50dp"
         android:textAlignment="gravity"
         android:gravity="center|center_horizontal"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:maxLines="2"/>
 
     <LinearLayout
         android:layout_width="match_parent"

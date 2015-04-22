@@ -9,10 +9,13 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,13 +23,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import me.grantland.widget.AutofitLayout;
+import me.grantland.widget.AutofitTextView;
+
 
 public class ManualCourseAdd extends ActionBarActivity {
 
     private int holes;
-    private Map<NumberPicker,TextView> parFields;
+    private Map<Button,TextView> parFields;
     private Map<Integer,Integer> pars;
-    private Map<NumberPicker, Integer> numPickerHoles;
+    private Map<Button, Integer> buttonPars;
     public static final String EXTRA_MESSAGE = "Pars";
 
     @Override
@@ -34,30 +40,40 @@ public class ManualCourseAdd extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manual_course_add);
 
-        parFields = new HashMap<NumberPicker, TextView>();
+        parFields = new HashMap<Button, TextView>();
         pars = new HashMap<Integer, Integer>();
-        numPickerHoles = new HashMap<NumberPicker, Integer>();
-        TextView title = (TextView) findViewById(R.id.mca_title);
+        buttonPars = new HashMap<Button, Integer>();
+        AutofitTextView title = (AutofitTextView) findViewById(R.id.mca_title);
         title.setText(getIntent().getStringExtra(CourseSelect.EXTRA_MESSAGE));
-        NumberPicker np = (NumberPicker) findViewById(R.id.mca_number_picker);
-        np.setMinValue(1);
-        np.setMaxValue(50);
-        np.setValue(18);
+        Button moreHoles = (Button) findViewById(R.id.mca_more_holes);
+        Button lessHoles = (Button) findViewById(R.id.mca_less_holes);
         holes = 18;
         LinearLayout ll = drawHoles(18,1);
         LinearLayout holeContainer = (LinearLayout) findViewById(R.id.mca_hole_container);
         holeContainer.removeAllViews();
+
         int childCount = ll.getChildCount();
         for(int i = 0; i < childCount; i++){
             View child = ll.getChildAt(0);
             ll.removeView(child);
             holeContainer.addView(child);
         }
-        np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                addHoles(newVal-oldVal,(LinearLayout) findViewById(R.id.mca_hole_container));
-                holes = newVal;
+
+        moreHoles.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                addHoles(1, (LinearLayout) findViewById(R.id.mca_hole_container));
+                TextView holeText = (TextView) findViewById(R.id.mca_total_holes);
+                holes++;
+                holeText.setText(holes + "");
+            }
+        });
+
+        lessHoles.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                addHoles(-1,(LinearLayout) findViewById(R.id.mca_hole_container));
+                TextView holeText = (TextView) findViewById(R.id.mca_total_holes);
+                holes--;
+                holeText.setText(holes+"");
             }
         });
 
@@ -124,24 +140,36 @@ public class ManualCourseAdd extends ActionBarActivity {
             LinearLayout singleHole = (LinearLayout) item.findViewById(R.id.mca_single_hole);
             LinearLayout parent = (LinearLayout) item.findViewById(R.id.mca_hole_container);
             TextView hole = (TextView) item.findViewById(R.id.mca_hole);
+            TextView par = (TextView) item.findViewById(R.id.mca_hole_par);
             hole.setText("Hole " + startHoleNumber + "");
-            TextView par = (TextView) item.findViewById(R.id.mca_par);
-            par.setText("Par 3");
             pars.put(startHoleNumber,3);
-            NumberPicker np = (NumberPicker) item.findViewById(R.id.mca_hole_picker);
-            parFields.put(np,par);
-            np.setMinValue(1);
-            np.setMaxValue(20);
-            np.setValue(3);
-            np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            Button less = (Button) item.findViewById(R.id.mca_less_par);
+            Button more = (Button) item.findViewById(R.id.mca_more_par);
+            parFields.put(more, par);
+            parFields.put(less, par);
+            buttonPars.put(more, startHoleNumber);
+            buttonPars.put(less, startHoleNumber);
+            less.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                    parFields.get(picker).setText("Par " + newVal);
-                    Integer i = numPickerHoles.get(picker);
-                    pars.put(numPickerHoles.get(picker), newVal);
+                public void onClick(View v) {
+                    TextView hole = parFields.get(v);
+                    Integer holeNumber = buttonPars.get(v);
+                    Integer par = pars.get(holeNumber);
+                    pars.put(holeNumber, --par);
+                    hole.setText(par+"");
                 }
             });
-            numPickerHoles.put(np,startHoleNumber);
+            more.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TextView hole = parFields.get(v);
+                    Integer holeNumber = buttonPars.get(v);
+                    Integer par = pars.get(holeNumber);
+                    pars.put(holeNumber, ++par);
+                    hole.setText(par+"");
+                }
+            });
+
             parent.removeView(singleHole);
             ll.addView(singleHole);
             startHoleNumber++;
