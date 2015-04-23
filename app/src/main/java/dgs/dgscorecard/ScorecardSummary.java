@@ -1,5 +1,6 @@
 package dgs.dgscorecard;
 
+import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,7 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 
-public class ScorecardSummary extends ActionBarActivity {
+public class ScorecardSummary extends Activity {
 
     private ArrayList<TextView> allTextViews;
 

@@ -1,5 +1,6 @@
 package dgs.dgscorecard;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,7 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 
 
-public class PlayerSelect extends ActionBarActivity {
+public class PlayerSelect extends Activity {
 
     private String name;
     public static final String EXTRA_MESSAGE = "Players";
@@ -135,6 +136,8 @@ public class PlayerSelect extends ActionBarActivity {
             if(cb.isChecked())
                 players.add(cb.getText().toString());
         }
+        if(players.size() == 0)
+            return;
         intent.putStringArrayListExtra(EXTRA_MESSAGE, players);
         startActivity(intent);
 

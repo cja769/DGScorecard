@@ -1,5 +1,6 @@
 package dgs.dgscorecard;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
@@ -27,7 +28,7 @@ import me.grantland.widget.AutofitLayout;
 import me.grantland.widget.AutofitTextView;
 
 
-public class ManualCourseAdd extends ActionBarActivity {
+public class ManualCourseAdd extends Activity {
 
     private int holes;
     private Map<Button,TextView> parFields;
@@ -70,6 +71,8 @@ public class ManualCourseAdd extends ActionBarActivity {
 
         lessHoles.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
+                if(holes-1 <= 0)
+                    return;
                 addHoles(-1,(LinearLayout) findViewById(R.id.mca_hole_container));
                 TextView holeText = (TextView) findViewById(R.id.mca_total_holes);
                 holes--;

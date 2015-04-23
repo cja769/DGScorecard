@@ -1,5 +1,6 @@
 package dgs.dgscorecard;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -10,7 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 
-public class CourseSelect extends ActionBarActivity {
+public class CourseSelect extends Activity {
 
     private String course;
     public static final String EXTRA_MESSAGE = "Course";
@@ -54,6 +55,8 @@ public class CourseSelect extends ActionBarActivity {
     public void sendMessage(View view) {
         Intent intent = new Intent(this, ManualCourseAdd.class);
         EditText courseEditText = (EditText)findViewById(R.id.cs_course_name);
+        if(courseEditText.getText().toString().equals(""))
+            return;
         intent.putExtra(EXTRA_MESSAGE, courseEditText.getText().toString());
         intent.putStringArrayListExtra(PlayerSelect.EXTRA_MESSAGE, getIntent().getStringArrayListExtra(PlayerSelect.EXTRA_MESSAGE));
         startActivity(intent);

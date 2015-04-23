@@ -1,5 +1,6 @@
 package dgs.dgscorecard;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
@@ -23,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class ScorecardActivity extends ActionBarActivity {
+public class ScorecardActivity extends Activity {
 
     private Scorecard mScorecard;
     private int mCurrentHole;
