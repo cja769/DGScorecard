@@ -19,6 +19,7 @@ import android.widget.TextView;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -28,6 +29,7 @@ public class ScorecardActivity extends ActionBarActivity {
     private int mCurrentHole;
     private TextView hole;
     private TextView par;
+    private Map<Button,Player> buttonToPlayer;
 
 
     @Override
@@ -49,7 +51,7 @@ public class ScorecardActivity extends ActionBarActivity {
 
         hole = (TextView) findViewById(R.id.sc_hole_number);
         par = (TextView) findViewById(R.id.sc_par);
-
+        buttonToPlayer = new HashMap<Button, Player>();
         mScorecard = new Scorecard();
         mScorecard.getCourse().setName(courseName);
         mScorecard.getCourse().setPars(pars);
@@ -72,11 +74,55 @@ public class ScorecardActivity extends ActionBarActivity {
             TextView tv = (TextView) item.findViewById(R.id.sc_name);
             tv.setText(p.getName());
             p.setNameField(tv);
-            p.setPuttField((NumberPicker) item.findViewById(R.id.sc_putt_picker));
-            p.setScoreField((NumberPicker) item.findViewById(R.id.sc_score_picker));
+            p.setPuttField((TextView) item.findViewById(R.id.sc_hole_putt));
+            p.setScoreField((TextView) item.findViewById(R.id.sc_hole_score));
             p.setTotalScore((TextView) item.findViewById(R.id.sc_total_score));
             p.setUnderOver((TextView) item.findViewById(R.id.sc_plus_minus));
+            Button moreScore = (Button) item.findViewById(R.id.sc_more_score);
+            Button lessScore = (Button) item.findViewById(R.id.sc_less_score);
+            Button morePutt = (Button) item.findViewById(R.id.sc_more_putt);
+            Button lessPutt = (Button) item.findViewById(R.id.sc_less_putt);
+
+            buttonToPlayer.put(moreScore, p);
+            buttonToPlayer.put(lessScore, p);
+            buttonToPlayer.put(morePutt, p);
+            buttonToPlayer.put(lessPutt, p);
+            // Setting button onclicks
+            moreScore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Player p = buttonToPlayer.get(v);
+                    changeTextView(true, null, p.getScoreField());
+                    changeTextView(true, null, p.getTotalScore());
+                    setUnderOver(p);
+
+                }
+            });
+            lessScore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Player p = buttonToPlayer.get(v);
+                    if(changeTextView(false, 1, p.getScoreField())) {
+                        changeTextView(false, null, p.getTotalScore());
+                        setUnderOver(p);
+                    }
+
+                }
+            });
+            morePutt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    changeTextView(true, null, buttonToPlayer.get(v).getPuttField());
+                }
+            });
+            lessPutt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    changeTextView(false, 0, buttonToPlayer.get(v).getPuttField());
+                }
+            });
             pArraylist.set(i,p);
+            p.setScoreHolder(playerStuff);
             LinearLayout parent = (LinearLayout) item.findViewById(R.id.sc_all_scores);
             parent.removeView(playerStuff);
             ll.addView(playerStuff);
@@ -114,6 +160,20 @@ public class ScorecardActivity extends ActionBarActivity {
 
     }
 
+    private boolean changeTextView(boolean add, Integer lowerLimit, TextView tvToChange){
+        int num = 0;
+        try{
+            num = Integer.parseInt(tvToChange.getText()+"");
+        }
+        catch(NumberFormatException e) {}
+        num = add == true ? num+1 : num-1;
+        if(lowerLimit != null && lowerLimit.intValue() > num)
+            return false;
+        tvToChange.setText(num+"");
+        return true;
+    }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -142,47 +202,59 @@ public class ScorecardActivity extends ActionBarActivity {
         Map<Player, ArrayList<Integer>> cardPutts = mScorecard.getPutts();
         for(Player player: mScorecard.getPlayers()){
             ArrayList<Integer> playerScores = cardScores.get(player);
-            int scoreVal = player.getScoreField().getValue();
+            int scoreVal = 3;
+            try {
+                scoreVal = Integer.parseInt(player.getScoreField().getText() + "");
+            }
+            catch(NumberFormatException e){}
             playerScores.set(mCurrentHole, scoreVal);
             cardScores.put(player, playerScores);
             mScorecard.setScores(cardScores);
             ArrayList<Integer> playerPutts = cardPutts.get(player);
-            int puttVal = player.getPuttField().getValue();
+            int puttVal = 1;
+            try{
+                puttVal = Integer.parseInt(player.getPuttField().getText() + "");
+            }
+            catch(NumberFormatException e){}
             playerPutts.set(mCurrentHole, puttVal);
             cardPutts.put(player, playerPutts);
             mScorecard.setPutts(cardPutts);
+            player.setScore(mScorecard.calculateTotal(player));
         }
     }
 
     private void setViewElements(){
         hole.setText("Hole " + (mCurrentHole+1));
         par.setText("Par " + mScorecard.getCourse().getPars().get(mCurrentHole));
-
-       for(Player p: mScorecard.getPlayers()){
+        LinearLayout parent = (LinearLayout) findViewById(R.id.sc_all_scores);
+        parent.removeAllViews();
+       for(Player p: mScorecard.sortPlayers(mCurrentHole)){
+           parent.addView(p.getScoreHolder());
            int scoreVal = mScorecard.getScores().get(p).get(mCurrentHole);
-           NumberPicker scoreField = p.getScoreField();
-           scoreField.setMinValue(1);
-           scoreField.setMaxValue(20);
-           scoreField.setValue(scoreVal);
+           TextView scoreField = p.getScoreField();
+           scoreField.setText(scoreVal+"");
            int puttVal = mScorecard.getPutts().get(p).get(mCurrentHole);
-           NumberPicker puttField = p.getPuttField();
-           puttField.setMinValue(0);
-           puttField.setMaxValue(20);
-           puttField.setValue(puttVal);
+           TextView puttField = p.getPuttField();
+           puttField.setText(puttVal+"");
            int total = mScorecard.calculateTotal(p);
            p.getTotalScore().setText(total+"");
-           int diff = total - mScorecard.getCourse().getPar();
-           String underOverStr = "";
-           if(diff < 0)
-               underOverStr += "(" + diff + ")";
-           else
-               underOverStr += "(+" + diff + ")";
-
-           p.getUnderOver().setText(underOverStr);
-
+           setUnderOver(p);
        }
 
+    }
 
-
+    private void setUnderOver(Player p){
+        int total = 0;
+        try{
+            total = Integer.parseInt(p.getTotalScore().getText()+"");
+        }
+        catch(NumberFormatException e){return;}
+        int diff = total - mScorecard.getCourse().getPar();
+        String underOverStr = "";
+        if(diff < 0)
+            underOverStr += "(" + diff + ")";
+        else
+            underOverStr += "(+" + diff + ")";
+        p.getUnderOver().setText(underOverStr);
     }
 }

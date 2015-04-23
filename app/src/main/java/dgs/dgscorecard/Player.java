@@ -1,32 +1,42 @@
 package dgs.dgscorecard;
 
 import android.content.Context;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 /**
  * Created by Jay on 3/23/15.
  */
-public class Player {
+public class Player implements Comparable<Player> {
 
     private int pID;
     private String mName;
     private TextView nameField;
-    private NumberPicker scoreField;
-    private NumberPicker puttField;
+    private TextView scoreField;
+    private TextView puttField;
     private TextView totalScore;
     private TextView underOver;
+    private int score;
+    private LinearLayout scoreHolder;
 
+
+    public Player() { score = 0;};
     public Player(String name){
         mName = name;
+        score = 0;
     }
 
 
     public Player(String name, int IDnumber){
         mName = name;
         pID = IDnumber;
+        score = 0;
     }
 
 
@@ -35,15 +45,17 @@ public class Player {
         mName = name;
         nameField = new TextView(context);
         nameField.setText(name);
-        scoreField = new NumberPicker(context);
-        scoreField.setValue(Integer.parseInt(scoreF));
-        puttField = new NumberPicker(context);
-        puttField.setValue(Integer.parseInt(puttF));
+        scoreField = new TextView(context);
+        scoreField.setText(scoreF);
+        puttField = new TextView(context);
+        puttField.setText(puttF);
         totalScore = new TextView(context);
         totalScore.setText(totalS);
         underOver = new TextView(context);
         underOver.setText(underO);
+        score = 0;
     }
+
 
     public TextView getNameField() {
         return nameField;
@@ -53,19 +65,19 @@ public class Player {
         this.nameField = nameField;
     }
 
-    public NumberPicker getScoreField() {
+    public TextView getScoreField() {
         return scoreField;
     }
 
-    public void setScoreField(NumberPicker scoreField) {
+    public void setScoreField(TextView scoreField) {
         this.scoreField = scoreField;
     }
 
-    public NumberPicker getPuttField() {
+    public TextView getPuttField() {
         return puttField;
     }
 
-    public void setPuttField(NumberPicker puttField) {
+    public void setPuttField(TextView puttField) {
         this.puttField = puttField;
     }
 
@@ -93,11 +105,29 @@ public class Player {
         this.mName = mName;
     }
 
+    public int getScore() { return score;};
+    public void setScore(int num) { score = num;};
+    public LinearLayout getScoreHolder() { return scoreHolder;};
+    public void setScoreHolder(LinearLayout ll) { scoreHolder = ll;};
+
     public String getTextNameF() {return nameField.getText().toString();}
     public String getTextTScore() {return totalScore.getText().toString();}
     public String getTextUO() {return underOver.getText().toString();}
-    public String getValScore() {return Integer.toString(scoreField.getValue());}
-    public String getValPutts() {return Integer.toString(puttField.getValue());}
+    public String getValScore() {return scoreField.getText()+"";}
+    public String getValPutts() {return puttField.getText()+"";}
     public String getPID() {return Integer.toString(pID);}
+
+    @Override
+    public int compareTo(Player other){
+        if(other.getScore() == 0) return 1;
+        else if(this.getScore() == 0) return -1;
+
+        if(this.getScore() > other.getScore())
+            return 1;
+        else if(other.getScore() > this.getScore())
+            return -1;
+        return 0;
+    }
+
 
 }
