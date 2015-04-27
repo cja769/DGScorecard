@@ -21,13 +21,13 @@ public class Course {
         calculatePar();
     }
 
-    public Course(int numHoles, ArrayList<Integer> pars, String name){
+    public Course(int numHoles, ArrayList<Integer> pars, String name, Context context){
         mNumHoles = numHoles;
         mPars = pars;
         mName = name;
         calculatePar();
     }
-
+    
     public void setNumHoles(int numHoles){
         mNumHoles = numHoles;
     }
