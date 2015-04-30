@@ -1,5 +1,7 @@
 package dgs.dgscorecard;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 
 /**
@@ -11,6 +13,7 @@ public class Course {
     private ArrayList<Integer> mPars;
     private String mName;
     private int par;
+    private int ID;
 
     public Course(){
         mNumHoles = 18;
@@ -21,13 +24,14 @@ public class Course {
         calculatePar();
     }
 
-    public Course(int numHoles, ArrayList<Integer> pars, String name, Context context){
+    public Course(int numHoles, ArrayList<Integer> pars, String name, Context context, int id){
         mNumHoles = numHoles;
         mPars = pars;
         mName = name;
+        int ID = id;
         calculatePar();
     }
-    
+
     public void setNumHoles(int numHoles){
         mNumHoles = numHoles;
     }
@@ -57,6 +61,8 @@ public class Course {
     public int getPar(){
         return par;
     }
+
+    public int getID() {return ID; }
 
     private int calculatePar(){
         int total = 0;
