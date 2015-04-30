@@ -22,6 +22,10 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
     // Table names
     private static final String PLAYER_ITEMS = "players";
     private static final String COURSE_ITEMS = "courses";
+    private static final String SCORECARD_ITEMS = "scorecards";
+    private static final String SCORECARDPLAYER_ITEMS = "scorecardplayers";
+    private static final String SCORECARDPUTT_ITEMS = "scorecardputts";
+    private static final String SCORECARDSCORE_ITEMS = "scorecardscores";
 
     // Common Column names (players)
     private static final String COLUMN_ID = "id";
@@ -42,6 +46,18 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_INDIVPARS = "course_indivpars";
     private static final String COLUMN_CID = "course_cid";
 
+    // Column names (scorecards)
+    private static final String COLUMN_SID = "scorecard_id";
+    private static final String COLUMN_SCOURSEID = "scorecard_courseid";
+
+    //Column names (scorecardplayers)
+    private static final String COLUMN_SPID = "scorecardplayer_id";
+
+    //Column names (scorecardputts)
+    private static final String COLUMN_SCPUTTS = "scorecard_putts";
+
+    //Column names (scorecardputts)
+    private static final String COLUMN_SCSCORES = "scorecard_scores";
 
     public DGSDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -57,7 +73,7 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_SCORE + " LONG, "
                 + COLUMN_TOTALSCORE + " LONG, "
                 + COLUMN_UNDEROVER + " LONG, "
-                + COLUMN_PID + " LONG" +")");
+                + COLUMN_PID + " LONG UNIQUE" +")");
 
         db.execSQL("CREATE TABLE " + COURSE_ITEMS + "("
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -65,7 +81,28 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_INDIVPARS + " TEXT UNIQUE, "
                 + COLUMN_CNAME + " TEXT UNIQUE, "
                 + COLUMN_PAR + " LONG, "
-                + COLUMN_CID + " LONG" +")");
+                + COLUMN_CID + " LONG UNIQUE" +")");
+
+        db.execSQL("CREATE TABLE " + SCORECARD_ITEMS + "("
+                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_SCOURSEID + " LONG, "
+                + COLUMN_SID + " LONG UNIQUE"+")");
+
+        db.execSQL("CREATE TABLE " + SCORECARDPLAYER_ITEMS + "("
+                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_SID + " LONG, "
+                + COLUMN_SPID + " LONG UNIQUE"+")");
+
+        db.execSQL("CREATE TABLE " + SCORECARDSCORE_ITEMS + "("
+                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_SCSCORES + " LONG, "
+                + COLUMN_SPID + " LONG "+")");
+
+        db.execSQL("CREATE TABLE " + SCORECARDPUTT_ITEMS + "("
+                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_SCPUTTS + " LONG, "
+                + COLUMN_SPID + " LONG "+")");
+
 
     }
 
@@ -75,7 +112,10 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
         // 1) drop the old table
         db.execSQL("DROP TABLE IF EXISTS " + PLAYER_ITEMS);
         db.execSQL("DROP TABLE IF EXISTS " + COURSE_ITEMS);
-        //db.execSQL("DROP TABLE IF EXISTS " + SCORECARD_ITEMS);
+        db.execSQL("DROP TABLE IF EXISTS " + SCORECARD_ITEMS);
+        db.execSQL("DROP TABLE IF EXISTS " + SCORECARDPLAYER_ITEMS);
+        db.execSQL("DROP TABLE IF EXISTS " + SCORECARDSCORE_ITEMS);
+        db.execSQL("DROP TABLE IF EXISTS " + SCORECARDPUTT_ITEMS);
 
         // 2) create a new database
         onCreate(db);
@@ -155,7 +195,7 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
 
                 items.add(new Course(mNumHoles, mPars,
                         cursor.getString(2),
-                        context));
+                        context, cursor.getInt(4)));
             }
 
             // close the cursor
@@ -167,6 +207,94 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
 
         // return the list
         return items;
+    }
+
+
+    /**
+     * retrieve all basic info for all scorecards: date and course
+     */
+    public List<Scorecard> getAllSCItems(Context context) {
+        // initialize the list
+        List<Scorecard> items = new ArrayList<Scorecard>();
+
+        // obtain a readable database
+        SQLiteDatabase db = getReadableDatabase();
+
+        // send query
+        Cursor cursor = db.query(SCORECARD_ITEMS, new String[]{
+                        COLUMN_ID,
+                        COLUMN_SCOURSEID,
+                        COLUMN_SID
+                        //time?
+                },
+                null, null, null, null, null, null
+        ); // get all rows
+
+        if (cursor != null) {
+            // add items to the list
+            for (cursor.moveToFirst(); cursor.isAfterLast() == false; cursor.moveToNext()) {
+        //        items.add(new Scorecard(cursor.getString(0), cursor.getString(1),
+           //             cursor.getString(2), context));
+
+            }
+
+            // close the cursor
+            cursor.close();
+        }
+
+        // close the database connection
+        db.close();
+
+        // return the list
+        return items;
+    }
+
+
+    public Scorecard getFullScorecard(int SID, Context context) {
+        // initialize the list
+        Scorecard item = new Scorecard();
+
+        // obtain a readable database
+        SQLiteDatabase db = getReadableDatabase();
+
+        // send query
+        Cursor cursor = db.query(SCORECARD_ITEMS, new String[]{
+                        COLUMN_ID,
+                        COLUMN_SCOURSEID,
+                        COLUMN_SID},
+                null, null, null, null, null, null
+        ); // get all rows
+
+        if (cursor != null) {
+            // add items to the list
+            for (cursor.moveToFirst(); cursor.isAfterLast() == false; cursor.moveToNext()) {
+
+
+
+            }
+
+            // close the cursor
+            cursor.close();
+        }
+
+        //get course id from scorecard
+        //make scorecard item ; get course w/ ID and make it and add it to scorecard
+        //find all players in scorecardplayer_items w/ scorecardid
+        //make them and add them to scorecard w/ setPlayers(arraylist<players>)
+        //loop
+        //get scores from scorecardscores_items w/ player id ...
+        // make map w/ player:scores and add them to scorecard w/ setScores(map)
+        //same with putts
+
+
+
+
+
+        // close the database connection
+        db.close();
+
+        // return the list
+        return item;
     }
 
     /**
@@ -311,10 +439,56 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_INDIVPARS, parstring.toString());
         values.put(COLUMN_CNAME, item.getName());
         values.put(COLUMN_PAR, item.getPar());
-        //values.put(COLUMN_CID, item.getCID());
+        values.put(COLUMN_CID, item.getID());
 
         // add the row
         db.insert(COURSE_ITEMS, null, values);
+
+    }
+
+    private void addScorecardItem(SQLiteDatabase db, Scorecard item) {
+        // prepare values
+        ContentValues values = new ContentValues();
+
+        int CID = item.getCourse().getID();
+
+        values.put(COLUMN_SCOURSEID, CID);
+        values.put(COLUMN_SID, item.getID());
+
+        db.insert(SCORECARD_ITEMS, null, values);
+
+
+        List<Player> playerArray = new ArrayList<Player>();
+        playerArray = item.getPlayers();
+
+        for (Player each: playerArray){
+            values.clear();
+
+            values.put(COLUMN_SPID, each.getPID());
+            values.put(COLUMN_SID, item.getID());
+
+            db.insert(SCORECARDPLAYER_ITEMS, null, values);
+
+
+            for(Integer eachScore: item.getScores().get(each)) {
+                values.clear();
+                values.put(COLUMN_SCSCORES, eachScore);
+                values.put(COLUMN_SPID, each.getPID());
+
+                db.insert(SCORECARDSCORE_ITEMS, null, values);
+            }
+
+            for(Integer eachPutt: item.getPutts().get(each)) {
+                values.clear();
+                values.put(COLUMN_SCPUTTS, eachPutt);
+                values.put(COLUMN_SPID, each.getPID());
+
+                db.insert(SCORECARDPUTT_ITEMS, null, values);
+
+            }
+
+        }
+
 
     }
 }
