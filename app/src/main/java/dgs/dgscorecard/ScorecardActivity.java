@@ -20,8 +20,10 @@ import android.widget.TextView;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 
 public class ScorecardActivity extends Activity {
@@ -31,6 +33,7 @@ public class ScorecardActivity extends Activity {
     private TextView hole;
     private TextView par;
     private Map<Button,Player> buttonToPlayer;
+    public static String EXTRA_MESSAGE = "SCORECARD";
 
 
     @Override
@@ -136,13 +139,13 @@ public class ScorecardActivity extends Activity {
         final Button forwardButton = (Button) findViewById(R.id.sc_forward);
         forwardButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                setScores();
                 if(mCurrentHole+1 < mScorecard.getCourse().getNumHoles()) {
-                    setScores();
                     mCurrentHole++;
                     setViewElements();
                 }
                 else {
-                    // showSummary();
+                    showSummary();
                 }
             }
         });
@@ -158,6 +161,18 @@ public class ScorecardActivity extends Activity {
             }
         });
 
+
+    }
+
+    private void showSummary() {
+
+        Intent intent = new Intent(this, ScorecardSummary.class);
+        Map<Player,ArrayList<Integer>> allScores = mScorecard.getScores();
+        HashMap<String, ArrayList<Integer>> serializableScores = new HashMap<String, ArrayList<Integer>>();
+        for(Player p: allScores.keySet())
+            serializableScores.put(p.getName(),allScores.get(p));
+        intent.putExtra(EXTRA_MESSAGE,serializableScores);
+        startActivity(intent);
 
     }
 
