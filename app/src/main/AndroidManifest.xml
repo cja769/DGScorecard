@@ -10,7 +10,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,29 +20,45 @@
         <activity
             android:name=".ScorecardActivity"
             android:label="@string/title_activity_scorecard"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".PlayerSelect"
             android:label="@string/title_activity_player_select"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
             android:name=".CourseSelect"
             android:label="@string/title_activity_course_select"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ManualCourseAdd"
             android:label="@string/title_activity_manual_course_add"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
             android:name=".ScorecardSummary"
             android:label="@string/title_activity_scorecard_summary"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".EditScorecard"
+            android:label="@string/title_activity_edit_scorecard" >
+        </activity>
+        <activity
+            android:name=".EditCourse"
+            android:label="@string/title_activity_edit_course" >
+        </activity>
+        <activity
+            android:name=".EditPlayer"
+            android:label="@string/title_activity_edit_player" >
+        </activity>
+        <activity
+            android:name=".ResumeScorecard"
+            android:label="@string/title_activity_resume_scorecard" >
         </activity>
     </application>
 
