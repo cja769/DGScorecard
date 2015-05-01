@@ -3,6 +3,7 @@ package dgs.dgscorecard;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ public class Scorecard {
     private ArrayList<Player> mPlayers;
     private ArrayList<ArrayList<Player>> mCurrentOrder;
     private int ID;
+    private Date date;
 
 
     public Scorecard () {
@@ -26,12 +28,13 @@ public class Scorecard {
         mCurrentOrder = new ArrayList<ArrayList<Player>>();
     }
 
-    public Scorecard (Course course, int id) {
+    public Scorecard (Course course, int id, Date mDate) {
         mScores = new HashMap<Player, ArrayList<Integer>>();
         mPutts = new HashMap<Player, ArrayList<Integer>>();
         mCourse = course;
         mCurrentOrder = new ArrayList<ArrayList<Player>>();
         ID = id;
+        date = mDate;
     }
 
     public Map<Player, ArrayList<Integer>> getScores() {
@@ -47,6 +50,8 @@ public class Scorecard {
     }
 
     public int getID() { return ID; }
+
+    public Date getDate() { return date; }
 
     public ArrayList<Player> getPlayers() {
         return mPlayers;
@@ -66,6 +71,10 @@ public class Scorecard {
 
     public void setCurrentOrder(ArrayList<ArrayList<Player>> ps){
         mCurrentOrder = ps;
+    }
+
+    public void setID(int sid){
+        ID = sid;
     }
 
     public ArrayList<ArrayList<Player>> getCurrentOrder(){ return mCurrentOrder;};
