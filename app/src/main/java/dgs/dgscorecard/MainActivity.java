@@ -24,12 +24,6 @@ public class MainActivity extends Activity {
             }
         });
 
-        final Button addCourseButton = (Button) findViewById(R.id.main_add_course);
-        addCourseButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                sendMessage(ManualCourseAdd.class);
-            }
-        });
 
         final Button testSummary = (Button) findViewById(R.id.main_test_summary);
         testSummary.setOnClickListener(new View.OnClickListener() {
@@ -37,6 +31,28 @@ public class MainActivity extends Activity {
                 sendMessage(ScorecardSummary.class);
             }
         });
+
+        findViewById(R.id.main_edit_scorecard).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendMessage(EditScorecard.class);
+            }
+        });
+
+        findViewById(R.id.main_edit_course).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendMessage(EditCourse.class);
+            }
+        });
+
+        findViewById(R.id.main_edit_player).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendMessage(EditPlayer.class);
+            }
+        });
+
     }
 
 

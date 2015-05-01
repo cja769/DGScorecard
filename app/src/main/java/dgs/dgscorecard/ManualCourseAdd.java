@@ -23,6 +23,7 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,8 +38,10 @@ public class ManualCourseAdd extends Activity {
     private Map<Integer,Integer> pars;
     private Map<Button, Integer> buttonPars;
     public static final String EXTRA_MESSAGE = "Pars";
+    public static final String NEXT_ACTIVITY = "Next";
     private SharedPreferences mPrefs;
     private int num_courses;
+    private Class nextClass;
 
     private DGSDatabaseHelper mDatabaseHelper;
 
@@ -47,6 +50,9 @@ public class ManualCourseAdd extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manual_course_add);
 
+        mDatabaseHelper = new DGSDatabaseHelper(this);
+        mPrefs = getSharedPreferences("CourseSelect_prefs", MODE_PRIVATE);
+        num_courses = mPrefs.getInt("num_courses",0);
         parFields = new HashMap<Button, TextView>();
         pars = new HashMap<Integer, Integer>();
         buttonPars = new HashMap<Button, Integer>();
@@ -87,9 +93,14 @@ public class ManualCourseAdd extends Activity {
         });
 
         final Button startButton = (Button) findViewById(R.id.mca_start);
+        nextClass = ScorecardActivity.class;
+        if(getIntent().getStringExtra(ManualCourseAdd.NEXT_ACTIVITY).equals("CourseSelect")){
+            startButton.setText("Finish");
+            nextClass = CourseSelect.class;
+        }
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                sendMessage(v);
+                sendMessage(nextClass);
             }
         });
 
@@ -198,8 +209,8 @@ public class ManualCourseAdd extends Activity {
         return ll;
     }
 
-    private void sendMessage(View v){
-        Intent intent = new Intent(this, ScorecardActivity.class);
+    private void sendMessage(Class c){
+        Intent intent = new Intent(this, c);
         Set<Integer> keys = pars.keySet();
         int[] k = new int[keys.size()];
         int i = 0;
@@ -216,22 +227,19 @@ public class ManualCourseAdd extends Activity {
             allPars.add(pars.get(k[i]));
 
 
-        EditText courseEditText = (EditText)findViewById(R.id.cs_course_name);
+        me.grantland.widget.AutofitTextView courseEditText = (me.grantland.widget.AutofitTextView)findViewById(R.id.mca_title);
         String name = courseEditText.getText().toString();
 
         Course newCourse = new Course(holes, allPars, name, this, num_courses);
 
         ++num_courses;
 
-        ArrayList<Course> courseList = new ArrayList<>();
+        List<Course> courseList = new ArrayList<>();
         courseList.add(newCourse);
 
         mDatabaseHelper.addCourseItems(courseList);
 
-        intent.putIntegerArrayListExtra(EXTRA_MESSAGE,allPars);
-        intent.putExtra(CourseSelect.EXTRA_MESSAGE, getIntent().getStringExtra(CourseSelect.EXTRA_MESSAGE));
-        intent.putStringArrayListExtra(PlayerSelect.EXTRA_MESSAGE, getIntent().getStringArrayListExtra(PlayerSelect.EXTRA_MESSAGE));
-        startActivity(intent);
+         startActivity(intent);
 
     }
 }

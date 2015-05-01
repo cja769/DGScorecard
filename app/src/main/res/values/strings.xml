@@ -10,5 +10,10 @@
     <string name="title_activity_course_select">CourseSelect</string>
     <string name="title_activity_manual_course_add">ManualCourseAdd</string>
     <string name="title_activity_scorecard_summary">ScorecardSummary</string>
+    <string name="title_activity_edit_scorecard">EditScorecard</string>
+    <string name="title_activity_edit_course">EditCourse</string>
+    <string name="title_activity_edit_player">EditPlayer</string>
+    <string name="title_activity_resume">ResumeActivity</string>
+    <string name="title_activity_resume_scorecard">ResumeScorecard</string>
 
 </resources>

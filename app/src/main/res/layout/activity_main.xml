@@ -11,31 +11,57 @@
         android:layout_height="72dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="DG Scorecard"
-        android:id="@+id/main_home_title"
+        android:id="@+id/main_title"
         android:textIsSelectable="true"
         android:textSize="50dp"
         android:textAlignment="gravity"
         android:gravity="center|center_horizontal" />
 
-    <Button
-        android:layout_width="210dp"
-        android:layout_height="wrap_content"
-        android:text="New Scorecard"
-        android:id="@+id/main_new_scorecard"
-        android:layout_gravity="center_horizontal" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView">
 
-    <Button
-        android:layout_width="210dp"
-        android:layout_height="wrap_content"
-        android:text="Add Course"
-        android:id="@+id/main_add_course"
-        android:layout_gravity="center_horizontal" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
 
-    <Button
-        android:layout_width="210dp"
-        android:layout_height="wrap_content"
-        android:text="Test Summary"
-        android:id="@+id/main_test_summary"
-        android:layout_gravity="center_horizontal" />
+            <Button
+                android:layout_width="210dp"
+                android:layout_height="wrap_content"
+                android:text="New Scorecard"
+                android:id="@+id/main_new_scorecard"
+                android:layout_gravity="center_horizontal" />
+
+            <Button
+                android:layout_width="210dp"
+                android:layout_height="wrap_content"
+                android:text="Scorecards"
+                android:id="@+id/main_edit_scorecard"
+                android:layout_gravity="center_horizontal" />
+
+            <Button
+                android:layout_width="210dp"
+                android:layout_height="wrap_content"
+                android:text="Courses"
+                android:id="@+id/main_edit_course"
+                android:layout_gravity="center_horizontal" />
+
+            <Button
+                android:layout_width="210dp"
+                android:layout_height="wrap_content"
+                android:text="Players"
+                android:id="@+id/main_edit_player"
+                android:layout_gravity="center_horizontal" />
+
+            <Button
+                android:layout_width="210dp"
+                android:layout_height="wrap_content"
+                android:text="Test Summary"
+                android:id="@+id/main_test_summary"
+                android:layout_gravity="center_horizontal" />
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

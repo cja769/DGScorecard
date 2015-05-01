@@ -8,25 +8,57 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+
+import java.util.List;
 
 
 public class CourseSelect extends Activity {
 
     private String course;
     public static final String EXTRA_MESSAGE = "Course";
+    private DGSDatabaseHelper mDatabaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_select);
 
-        final Button button = (Button) findViewById(R.id.cs_start);
-        button.setOnClickListener(new View.OnClickListener() {
+        (findViewById(R.id.cs_start)).setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
-                sendMessage(v);
+                startScorecard();
             }
         });
+
+        (findViewById(R.id.cs_add)).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                addCourse();
+            }
+        });
+
+        LinearLayout checkboxFields = (LinearLayout) findViewById(R.id.cs_checkbox_field);
+        mDatabaseHelper = new DGSDatabaseHelper(this);
+        List<Course> allCourses = mDatabaseHelper.getAllCourseItems(this);
+        for(Course c: allCourses){
+            CheckBox cb = new CheckBox(this);
+            cb.setText(c.getName());
+            cb.setChecked(false);
+            checkboxFields.addView(cb);
+            cb.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    LinearLayout checkBoxFields = (LinearLayout) findViewById(R.id.cs_checkbox_field);
+                    for(int i = 0; i < checkBoxFields.getChildCount(); i++){
+                        View child = checkBoxFields.getChildAt(i);
+                        if(!child.equals(v))
+                            ((CheckBox) child).setChecked(false);
+                    }
+                }
+            });
+        }
     }
 
 
@@ -52,15 +84,20 @@ public class CourseSelect extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void sendMessage(View view) {
+    private void addCourse(){
         Intent intent = new Intent(this, ManualCourseAdd.class);
-        EditText courseEditText = (EditText)findViewById(R.id.cs_course_name);
+        EditText courseEditText = (EditText)findViewById(R.id.cs_enter_name);
         if(courseEditText.getText().toString().equals(""))
             return;
         intent.putExtra(EXTRA_MESSAGE, courseEditText.getText().toString());
+        intent.putExtra(ManualCourseAdd.NEXT_ACTIVITY,"CourseSelect");
+        startActivity(intent);
+    }
+
+    public void startScorecard() {
+        Intent intent = new Intent(this, ScorecardActivity.class);
+
         intent.putStringArrayListExtra(PlayerSelect.EXTRA_MESSAGE, getIntent().getStringArrayListExtra(PlayerSelect.EXTRA_MESSAGE));
         startActivity(intent);
-
-
     }
 }
