@@ -16,6 +16,7 @@ public class Scorecard {
     private Course mCourse;
     private ArrayList<Player> mPlayers;
     private ArrayList<ArrayList<Player>> mCurrentOrder;
+    private int ID;
 
 
     public Scorecard () {
@@ -25,11 +26,12 @@ public class Scorecard {
         mCurrentOrder = new ArrayList<ArrayList<Player>>();
     }
 
-    public Scorecard (Course course) {
+    public Scorecard (Course course, int id) {
         mScores = new HashMap<Player, ArrayList<Integer>>();
         mPutts = new HashMap<Player, ArrayList<Integer>>();
         mCourse = course;
         mCurrentOrder = new ArrayList<ArrayList<Player>>();
+        ID = id;
     }
 
     public Map<Player, ArrayList<Integer>> getScores() {
@@ -43,6 +45,8 @@ public class Scorecard {
     public Course getCourse(){
         return mCourse;
     }
+
+    public int getID() { return ID; }
 
     public ArrayList<Player> getPlayers() {
         return mPlayers;

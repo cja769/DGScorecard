@@ -3,6 +3,7 @@ package dgs.dgscorecard;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewParent;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -35,6 +37,10 @@ public class ManualCourseAdd extends Activity {
     private Map<Integer,Integer> pars;
     private Map<Button, Integer> buttonPars;
     public static final String EXTRA_MESSAGE = "Pars";
+    private SharedPreferences mPrefs;
+    private int num_courses;
+
+    private DGSDatabaseHelper mDatabaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +116,18 @@ public class ManualCourseAdd extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+
+        //Save Player Names
+        SharedPreferences.Editor ed = mPrefs.edit();
+        ed.putInt("num_courses", num_courses);
+        //if(prevPlayers.size() > 0)
+        //ed.putStringSet("mPlayerNames", new HashSet<String>(prevPlayers));
+        ed.apply();
     }
 
     private void addHoles(int numHoles, LinearLayout ll){
@@ -196,6 +214,19 @@ public class ManualCourseAdd extends Activity {
         ArrayList<Integer> allPars = new ArrayList<Integer>();
         for(i = 0; i < k.length; i++)
             allPars.add(pars.get(k[i]));
+
+
+        EditText courseEditText = (EditText)findViewById(R.id.cs_course_name);
+        String name = courseEditText.getText().toString();
+
+        Course newCourse = new Course(holes, allPars, name, this, num_courses);
+
+        ++num_courses;
+
+        ArrayList<Course> courseList = new ArrayList<>();
+        courseList.add(newCourse);
+
+        mDatabaseHelper.addCourseItems(courseList);
 
         intent.putIntegerArrayListExtra(EXTRA_MESSAGE,allPars);
         intent.putExtra(CourseSelect.EXTRA_MESSAGE, getIntent().getStringExtra(CourseSelect.EXTRA_MESSAGE));

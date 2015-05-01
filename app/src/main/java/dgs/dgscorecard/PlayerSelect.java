@@ -120,7 +120,7 @@ public class PlayerSelect extends Activity {
         ++num_players;
         ArrayList<Player> players = new ArrayList<>();
         players.add(newPlayer);
-        mDatabaseHelper.addItems(players);
+        mDatabaseHelper.addPlayerItems(players);
         //System.out.println(num_players);
         nameEditText.setText("");
 
