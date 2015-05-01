@@ -32,6 +32,15 @@ public class Course {
         calculatePar();
     }
 
+
+    public Course(int numHoles, ArrayList<Integer> pars, String name, int id){
+        mNumHoles = numHoles;
+        mPars = pars;
+        mName = name;
+        int ID = id;
+        calculatePar();
+    }
+
     public void setNumHoles(int numHoles){
         mNumHoles = numHoles;
     }
