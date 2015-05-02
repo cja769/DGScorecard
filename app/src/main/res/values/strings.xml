@@ -15,5 +15,8 @@
     <string name="title_activity_edit_player">EditPlayer</string>
     <string name="title_activity_resume">ResumeActivity</string>
     <string name="title_activity_resume_scorecard">ResumeScorecard</string>
+    <string name="edit_players_title">Select players to delete</string>
+    <string name="edit_courses_title">Select course to delete</string>
+    <string name="edit_scorecards_title">Select Scorecard</string>
 
 </resources>
