@@ -1,6 +1,7 @@
 package dgs.dgscorecard;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -12,10 +13,12 @@ import android.widget.Button;
 
 public class MainActivity extends Activity {
 
+    private Context thisContext;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        thisContext = this;
 
         final Button newCardButton = (Button) findViewById(R.id.main_new_scorecard);
         newCardButton.setOnClickListener(new View.OnClickListener() {
@@ -50,6 +53,13 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 sendMessage(EditPlayer.class);
+            }
+        });
+
+        findViewById(R.id.main_reset_db).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                (new DGSDatabaseHelper(thisContext)).resetDb();
             }
         });
 

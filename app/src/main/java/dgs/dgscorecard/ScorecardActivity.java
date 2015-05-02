@@ -44,10 +44,10 @@ public class ScorecardActivity extends Activity {
         Intent intent = getIntent();
         String courseName = intent.getStringExtra(CourseSelect.EXTRA_MESSAGE);
         ArrayList<String> playerName = intent.getStringArrayListExtra(PlayerSelect.EXTRA_MESSAGE);
-        ArrayList<Integer> pars = intent.getIntegerArrayListExtra(ManualCourseAdd.EXTRA_MESSAGE);
         Log.v("Course", courseName);
         String str = "[";
-        for(Integer s: pars)
+        Course currentCourse = (new DGSDatabaseHelper(this)).getCourseByName(courseName);
+        for(Integer s: currentCourse.getPars())
             str += s + " ";
         str += "]";
         Log.v("Pars", str);
@@ -57,8 +57,7 @@ public class ScorecardActivity extends Activity {
         par = (TextView) findViewById(R.id.sc_par);
         buttonToPlayer = new HashMap<Button, Player>();
         mScorecard = new Scorecard();
-        mScorecard.getCourse().setName(courseName);
-        mScorecard.getCourse().setPars(pars);
+        mScorecard.setCourse(currentCourse);
         ArrayList<Player> pArraylist = new ArrayList<Player>();
         for(String s: playerName){
             Player p = new Player(s);

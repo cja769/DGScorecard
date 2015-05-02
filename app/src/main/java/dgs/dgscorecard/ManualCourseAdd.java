@@ -239,7 +239,9 @@ public class ManualCourseAdd extends Activity {
 
         mDatabaseHelper.addCourseItems(courseList);
 
-         startActivity(intent);
+        if(c == CourseSelect.class)
+            intent.putStringArrayListExtra(PlayerSelect.EXTRA_MESSAGE,getIntent().getStringArrayListExtra(PlayerSelect.EXTRA_MESSAGE));
+        startActivity(intent);
 
     }
 }

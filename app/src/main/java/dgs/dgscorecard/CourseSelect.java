@@ -90,12 +90,25 @@ public class CourseSelect extends Activity {
         if(courseEditText.getText().toString().equals(""))
             return;
         intent.putExtra(EXTRA_MESSAGE, courseEditText.getText().toString());
-        intent.putExtra(ManualCourseAdd.NEXT_ACTIVITY,"CourseSelect");
+        intent.putExtra(ManualCourseAdd.NEXT_ACTIVITY, "CourseSelect");
+        intent.putExtra(PlayerSelect.EXTRA_MESSAGE,getIntent().getStringArrayListExtra(PlayerSelect.EXTRA_MESSAGE));
         startActivity(intent);
     }
 
     public void startScorecard() {
         Intent intent = new Intent(this, ScorecardActivity.class);
+        LinearLayout checkboxFields = (LinearLayout) findViewById(R.id.cs_checkbox_field);
+        String c = "";
+        for(int i = 0; i < checkboxFields.getChildCount(); i++){
+            CheckBox course = (CheckBox) checkboxFields.getChildAt(i);
+            if(course.isChecked()){
+                c = course.getText().toString();
+                break;
+            }
+        }
+        if(c.equals("")) return;
+
+        intent.putExtra(EXTRA_MESSAGE,c);
 
         intent.putStringArrayListExtra(PlayerSelect.EXTRA_MESSAGE, getIntent().getStringArrayListExtra(PlayerSelect.EXTRA_MESSAGE));
         startActivity(intent);

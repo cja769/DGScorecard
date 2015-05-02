@@ -109,6 +109,11 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public void resetDb() {
+        SQLiteDatabase db = getReadableDatabase();
+        onUpgrade(db,0,0);
+    }
+
     /**
      * retrieve all items from the player database
      */
@@ -211,13 +216,57 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
 
             String parstring = cursor.getString(1);
 
-            int mNumHoles = Integer.parseInt(cursor.getString(0));
-            ArrayList<Integer> mPars = new ArrayList<Integer>(mNumHoles);
-            for(int i = 0; i < mNumHoles; i++)
-            mPars.add((int)parstring.charAt(i));
+            String[] pars = parstring.split(",");
+            ArrayList<Integer> pList = new ArrayList<>();
+            for(String par: pars)
+                pList.add(Integer.parseInt(par));
 
-            Course item = new Course(mNumHoles, mPars,
-                 cursor.getString(2), cursor.getInt(4));
+            Course item = new Course(cursor.getInt(0), pList,
+                    cursor.getString(2), cursor.getInt(4));
+
+
+            // close the cursor
+            cursor.close();
+
+            // close the database connection
+            db.close();
+
+            return item;
+        }
+        else return null;
+
+
+    }
+
+    public Course getCourseByName(String name){
+
+        // obtain a readable database
+        SQLiteDatabase db = getReadableDatabase();
+
+        // send query
+        Cursor cursor = db.query(COURSE_ITEMS, new String[]{
+                        COLUMN_HOLES,
+                        COLUMN_INDIVPARS,
+                        COLUMN_CNAME,
+                        COLUMN_PAR,
+                        COLUMN_ID},
+                COLUMN_CNAME + "=?",
+                new String[]{""+name}, null, null, null, null
+        ); // get all rows
+
+        if (cursor != null) {
+            // add items to the list
+            cursor.moveToFirst();
+
+            String parstring = cursor.getString(1);
+
+            String[] pars = parstring.split(",");
+            ArrayList<Integer> pList = new ArrayList<>();
+            for(String par: pars)
+                pList.add(Integer.parseInt(par));
+
+            Course item = new Course(cursor.getInt(0), pList,
+                    cursor.getString(2), cursor.getInt(4));
 
 
             // close the cursor
@@ -498,8 +547,9 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
         ArrayList<Integer> pars = item.getPars();
         StringBuilder parstring = new StringBuilder();
         for(int i = 0; i < pars.size(); ++i){
-            parstring.append(pars.get(i));
+            parstring.append(pars.get(i) + ",");
         }
+        parstring.substring(0,parstring.length()-1);
         values.put(COLUMN_INDIVPARS, parstring.toString());
         values.put(COLUMN_CNAME, item.getName());
         values.put(COLUMN_PAR, item.getPar());
