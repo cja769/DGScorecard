@@ -1,10 +1,15 @@
 package dgs.dgscorecard;
 
+import android.text.format.DateFormat;
+
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -26,6 +31,8 @@ public class Scorecard {
         mPutts = new HashMap<Player, ArrayList<Integer>>();
         mCourse = new Course();
         mCurrentOrder = new ArrayList<ArrayList<Player>>();
+        ID = -1;
+        date = new Date();
     }
 
     public Scorecard (Course course, int id, Date mDate) {
@@ -52,6 +59,19 @@ public class Scorecard {
     public int getID() { return ID; }
 
     public Date getDate() { return date; }
+
+    public void setDate(Date d) { date = d;}
+
+    public void setDate(String d) {
+        java.text.DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+        try {
+            Date s = format.parse(d);
+            date = s;
+        }
+        catch(Exception e){
+            return;
+        }
+    }
 
     public ArrayList<Player> getPlayers() {
         return mPlayers;

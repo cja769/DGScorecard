@@ -28,7 +28,7 @@ public class Course {
         mNumHoles = numHoles;
         mPars = pars;
         mName = name;
-        int ID = id;
+        ID = id;
         calculatePar();
     }
 
@@ -37,7 +37,7 @@ public class Course {
         mNumHoles = numHoles;
         mPars = pars;
         mName = name;
-        int ID = id;
+        ID = id;
         calculatePar();
     }
 

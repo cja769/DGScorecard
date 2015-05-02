@@ -2,6 +2,7 @@ package dgs.dgscorecard;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.LinkAddress;
 import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
@@ -23,6 +24,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import me.grantland.widget.AutofitHelper;
 import me.grantland.widget.AutofitTextView;
@@ -31,7 +33,8 @@ import me.grantland.widget.AutofitTextView;
 public class ScorecardSummary extends Activity {
 
     private ArrayList<TextView> allTextViews;
-    private HashMap<String, ArrayList<Integer>> allScores;
+    private Map<Player, ArrayList<Integer>> allScores;
+    private Scorecard mScorecard;
 
 
     @Override
@@ -42,7 +45,17 @@ public class ScorecardSummary extends Activity {
         LinearLayout linLayout = (LinearLayout) findViewById(R.id.ss_linear_layout);
         linLayout.removeAllViews();
         allTextViews = new ArrayList<TextView>();
-        allScores = (HashMap<String, ArrayList<Integer>>) getIntent().getSerializableExtra(ScorecardActivity.EXTRA_MESSAGE);
+        mScorecard = (new DGSDatabaseHelper(this)).getFullScorecard(getIntent().getIntExtra(ScorecardActivity.EXTRA_MESSAGE,-1),this);
+        allScores = mScorecard.getScores();
+        String str = "";
+        for(Player p: allScores.keySet()) {
+            for (int s : allScores.get(p))
+                str += s + " ";
+            Log.v(p.getName(),str);
+            str = "";
+        }
+
+
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         int holes = 0;
         for(ArrayList<Integer> ai: allScores.values()){
@@ -56,16 +69,17 @@ public class ScorecardSummary extends Activity {
             TableLayout tempTableLayout = (TableLayout) item.findViewById(R.id.ss_scorecard_table);
             TableRow nameR = (TableRow) item.findViewById(R.id.ss_name_row);
             TableRow holeRow = (TableRow) item.findViewById(R.id.ss_hole_row);
+            TableRow parRow = (TableRow) item.findViewById(R.id.ss_par_row);
             tempTableLayout.removeView(nameR);
             for(int j = 1; j < holeRow.getChildCount(); j++){
                 ((TextView) holeRow.getChildAt(j)).setText(((i*9) + j) + "");
-                // This is where we would set the pars but I'll get to that later
+                ((TextView) parRow.getChildAt(j)).setText((mScorecard.getCourse().getPars().get(i*9 + j - 1))+"");
             }
-            for (String p : allScores.keySet()) {
+            for (Player p : allScores.keySet()) {
                 View item2 = inflater.inflate(R.layout.activity_scorecard_summary, null);
                 TableRow nameRow = (TableRow) item2.findViewById(R.id.ss_name_row);
                 int count = nameRow.getChildCount();
-                ((AutofitTextView) nameRow.getChildAt(0)).setText(p);
+                ((AutofitTextView) nameRow.getChildAt(0)).setText(p.getName());
                 for (int j = 1; j < count; j++) {
                     ((TextView) nameRow.getChildAt(j)).setText(allScores.get(p).get((i*9) + j - 1) + "");
                 }
@@ -77,6 +91,13 @@ public class ScorecardSummary extends Activity {
             linLayout.addView(tempTableLayout);
 
         }
+
+        (findViewById(R.id.ss_finish)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendMessage(MainActivity.class);
+            }
+        });
 
 //        ((Button) findViewById(R.id.ss_export)).setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -126,4 +147,9 @@ public class ScorecardSummary extends Activity {
 //
 //        Log.v("Stuff",getFilesDir().getAbsolutePath());
 //    }
+
+    public void sendMessage(Class c) {
+        Intent intent = new Intent(this, c);
+        startActivity(intent);
+    }
 }

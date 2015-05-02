@@ -297,12 +297,19 @@
 
         </LinearLayout>
 
-       <!--  <Button
-            android:layout_width="wrap_content"
+        <Button
+            android:layout_width="210dp"
             android:layout_height="wrap_content"
-            android:text="Export"
-            android:id="@+id/ss_export"
-            android:layout_gravity="center_horizontal" /> -->
+            android:text="Finish"
+            android:id="@+id/ss_finish"
+            android:layout_gravity="center_horizontal" />
+
+        <!--  <Button
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="Export"
+             android:id="@+id/ss_export"
+             android:layout_gravity="center_horizontal" /> -->
     </LinearLayout>
 
 </ScrollView>

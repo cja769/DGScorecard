@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.text.DateFormat;
 import java.text.Format;
@@ -38,12 +39,10 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
 
     //Column names (players)
     private static final String COLUMN_NAME = "player_name";
-    private static final String COLUMN_NAMEVIEW = "player_nameview";
     private static final String COLUMN_SCORE = "player_score";
     private static final String COLUMN_PUTTS = "player_putts";
     private static final String COLUMN_TOTALSCORE = "player_totalscore";
     private static final String COLUMN_UNDEROVER = "player_underover";
-    private static final String COLUMN_PID = "player_pid";
 
     // Column names (courses)
     private static final String COLUMN_CNAME = "course_name";
@@ -83,7 +82,7 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + SCORECARD_ITEMS + "("
                 + COLUMN_ID + " INTEGER PRIMARY KEY, "
                 + COLUMN_SCOURSEID + " LONG, "
-                + COLUMN_SDATE + " LONG)");
+                + COLUMN_SDATE + " TEXT)");
 
         db.execSQL("CREATE TABLE " + PLAYER_SCORES + "("
                 + COLUMN_ID + " INTEGER PRIMARY KEY, "
@@ -112,6 +111,7 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
     public void resetDb() {
         SQLiteDatabase db = getReadableDatabase();
         onUpgrade(db,0,0);
+        db.close();
     }
 
     /**
@@ -196,6 +196,7 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
 
     public Course getCourseByID(int ID){
 
+        Log.v("course id",ID+"");
         // obtain a readable database
         SQLiteDatabase db = getReadableDatabase();
 
@@ -209,20 +210,23 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
                 "_id=?",
                 new String[]{""+ID}, null, null, null, null
         ); // get all rows
-
+        Course item = null;
         if (cursor != null) {
             // add items to the list
             cursor.moveToFirst();
+            if(cursor.isAfterLast() == false) {
 
-            String parstring = cursor.getString(1);
 
-            String[] pars = parstring.split(",");
-            ArrayList<Integer> pList = new ArrayList<>();
-            for(String par: pars)
-                pList.add(Integer.parseInt(par));
+                String parstring = cursor.getString(1);
 
-            Course item = new Course(cursor.getInt(0), pList,
-                    cursor.getString(2), cursor.getInt(4));
+                String[] pars = parstring.split(",");
+                ArrayList<Integer> pList = new ArrayList<>();
+                for (String par : pars)
+                    pList.add(Integer.parseInt(par));
+
+                item = new Course(cursor.getInt(0), pList,
+                        cursor.getString(2), cursor.getInt(4));
+            }
 
 
             // close the cursor
@@ -233,7 +237,10 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
 
             return item;
         }
-        else return null;
+        else {
+            db.close();
+            return null;
+        }
 
 
     }
@@ -264,6 +271,7 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
             ArrayList<Integer> pList = new ArrayList<>();
             for(String par: pars)
                 pList.add(Integer.parseInt(par));
+            Log.v("getCourse id", cursor.getInt(4)+"");
 
             Course item = new Course(cursor.getInt(0), pList,
                     cursor.getString(2), cursor.getInt(4));
@@ -277,7 +285,45 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
 
             return item;
         }
-        else return null;
+        else {
+            db.close();
+            return null;
+        }
+
+    }
+
+    public Player getPlayerByName(String name){
+
+        // obtain a readable database
+        SQLiteDatabase db = getReadableDatabase();
+
+        // send query
+        Cursor cursor = db.query(PLAYER_ITEMS, new String[]{
+                        COLUMN_ID,
+                        COLUMN_NAME},
+                COLUMN_NAME + "=?",
+                new String[]{""+name}, null, null, null, null
+        ); // get all rows
+
+        if (cursor != null) {
+            // add items to the list
+            cursor.moveToFirst();
+
+            Player p = new Player(cursor.getString(1),cursor.getInt(0));
+
+
+            // close the cursor
+            cursor.close();
+
+            // close the database connection
+            db.close();
+
+            return p;
+        }
+        else {
+            db.close();
+            return null;
+        }
 
     }
     /**
@@ -330,14 +376,38 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
 /*
 Once a scorecard is selected, its players and scores will be gotten from the database
  */
-    public Scorecard getFullScorecard(Scorecard item, Context context) {
+    public Scorecard getFullScorecard(int id, Context context) {
 
+        Log.v("Scorecard id", id+"");
+        if(id == -1)
+            return null;
         // obtain a readable database
         SQLiteDatabase db = getReadableDatabase();
-
-        String argument = String.valueOf(item.getID());
+        Scorecard item = new Scorecard();
+        String argument = String.valueOf(id);
+        Map<Player, ArrayList<Integer>> mScores = new HashMap<Player, ArrayList<Integer>>();
+        Map<Player, ArrayList<Integer>> mPutts= new HashMap<Player, ArrayList<Integer>>();
+        Cursor scorecardCursor = db.query(SCORECARD_ITEMS, new String[] {
+                                COLUMN_ID,
+                                COLUMN_SCOURSEID,
+                                COLUMN_SDATE},
+                                COLUMN_ID + " = ?",
+                                new String[] {argument}, null, null, null, null);
+        if(scorecardCursor != null){
+            scorecardCursor.moveToFirst();
+            item.setCourse(getCourseByID(scorecardCursor.getInt(1)));
+            item.setDate(scorecardCursor.getString(2));
+            item.setID(id);
+            scorecardCursor.close();
+        }
+        else {
+            //db.close();
+            return null;
+        }
 
         // send query
+        if(!db.isOpen())
+            db = getReadableDatabase();
         Cursor cursor = db.query(PLAYER_SCORES, new String[]{
                         COLUMN_SPLAYERID,
                         COLUMN_SCPUTTS,
@@ -353,61 +423,45 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
         if (cursor != null) {
             //for every player on the scorecard...
             for (cursor.moveToFirst(); cursor.isAfterLast() == false; cursor.moveToNext()) {
-                Map<Player, ArrayList<Integer>> mScores = new HashMap<Player, ArrayList<Integer>>();
-                Map<Player, ArrayList<Integer>> mPutts= new HashMap<Player, ArrayList<Integer>>();
 
+
+                Log.v("Player id in Scorecard", "" + cursor.getString(0));
                 //add player to arraylist that will be added to scorecard
                 // send query
                 Cursor cursor2 = db.query(PLAYER_ITEMS, new String[]{COLUMN_ID,
                                 COLUMN_NAME},
                         "_id = ?",
-                        new String[] {""+cursor.getString(0)}, null, null, null, null
+                        new String[]{"" + cursor.getString(0)}, null, null, null, null
                 ); // get row
 
                 //add to arraylist
-                Player newPlayer = new Player(cursor2.getString(1), cursor2.getInt(0));
-                items.add(newPlayer);
+                if (cursor2 != null) {
+                    cursor2.moveToFirst();
+                    Player newPlayer = new Player(cursor2.getString(1), cursor2.getInt(0));
+                    items.add(newPlayer);
 
-                // add scores to the scorecard
-                String str = new String(cursor.getString(2));
-                ArrayList aList= new ArrayList<Integer>();
+                    // add scores to the scorecard
+                    String str = cursor.getString(2);
+                    Log.v(newPlayer.getName() + " score", str);
+                    mScores.put(newPlayer, stringToList(str));
 
-                for (String splitter: str.split(",")){
-                    aList.add(Integer.valueOf(splitter));
+                    //add putts to the scorecard
+                    str = cursor.getString(1);
+                    mPutts.put(newPlayer, stringToList(str));
+                    // close the cursor
+                    cursor2.close();
                 }
-                mScores.put(newPlayer, aList);
-                item.setScores(mScores);
 
-                //add putts to the scorecard
-                str =  cursor.getString(1);
-                ArrayList bList= new ArrayList<Integer>();
-
-                mPutts.put(newPlayer, bList);
-                item.setPutts(mPutts);
-
-                // close the cursor
-                cursor2.close();
             }
 
-
-
+            item.setScores(mScores);
+            item.setPutts(mPutts);
             item.setPlayers(items);
 
 
             // close the cursor
             cursor.close();
         }
-
-        //find all players in scorecardplayer_items w/ scorecardid
-        //make them and add them to scorecard w/ setPlayers(arraylist<players>)
-        //loop
-        //get scores from scorecardscores_items w/ player id ...
-        // make map w/ player:scores and add them to scorecard w/ setScores(map)
-        //same with putts
-
-
-
-
 
         // close the database connection
         db.close();
@@ -486,45 +540,6 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
     }
 
     /**
-     * update an existing course item
-     public void updateItem(Course item) {
-     if (item != null) {
-     // obtain a readable database
-     SQLiteDatabase db = getWritableDatabase();
-
-     // prepare values
-     ContentValues values = new ContentValues();
-     values.put(COLUMN_SCORE, item.getValScore());
-     // values.put(COLUMN_PUTTS, item.getValPutts());
-     values.put(COLUMN_TOTALSCORE, item.getTextTScore());
-     values.put(COLUMN_UNDEROVER, item.getTextUO());
-
-     // send query for the row id
-     Cursor cursor = db.query(PLAYER_ITEMS,
-     new String[]{COLUMN_ID},
-     COLUMN_NAME + "=?",
-     new String[]{item.getName()},
-     null, null, null, null);
-
-     if (cursor != null) {
-     if (cursor.moveToFirst()) {
-     // update the row
-     db.update(PLAYER_ITEMS, values,
-     COLUMN_ID + "=?",
-     new String[]{cursor.getString(0)});
-     }
-
-     cursor.close();
-     }
-
-     // close the database connection
-     db.close();
-     }
-     }
-
-     */
-
-    /**
      * Add a new item
      */
     private void addPlayerItem(SQLiteDatabase db, Player item) {
@@ -534,6 +549,7 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
 
         // add the row
         db.insert(PLAYER_ITEMS, null, values);
+        db.close();
 
     }
 
@@ -545,21 +561,26 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
         ContentValues values = new ContentValues();
         values.put(COLUMN_HOLES, item.getNumHoles());
         ArrayList<Integer> pars = item.getPars();
-        StringBuilder parstring = new StringBuilder();
-        for(int i = 0; i < pars.size(); ++i){
-            parstring.append(pars.get(i) + ",");
-        }
-        parstring.substring(0,parstring.length()-1);
-        values.put(COLUMN_INDIVPARS, parstring.toString());
+        values.put(COLUMN_INDIVPARS, listToString(pars));
         values.put(COLUMN_CNAME, item.getName());
         values.put(COLUMN_PAR, item.getPar());
 
         // add the row
         db.insert(COURSE_ITEMS, null, values);
+        db.close();
 
     }
 
-    public void addScorecardItem(SQLiteDatabase db, Scorecard item) {
+    public void addScorecardItem(Scorecard item) {
+        SQLiteDatabase db = getWritableDatabase();
+        if(item.getID() == -1)
+            addScorecardItem(db, item);
+        else
+            updateScorecardItem(db, item);
+        db.close();
+    }
+
+    private void addScorecardItem(SQLiteDatabase db, Scorecard item) {
         // prepare values
         ContentValues values = new ContentValues();
 
@@ -576,11 +597,13 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
         db.insert(SCORECARD_ITEMS, null, values);
 
         //get scorecard's database ID
-        String query = "SELECT ROWID from MYTABLE order by ROWID DESC limit 1";
-        Cursor c = db.rawQuery(query,null);
-        if (c != null && c.moveToFirst()) {
-            int id = c.getInt(0); //The 0 is the column index, we only have 1 column, so the index is 0
+        Cursor cursor = db.query(SCORECARD_ITEMS, new String[]{COLUMN_ID,},
+                null, null, null, null, null, null
+        ); // get all rows
+        if (cursor != null && cursor.moveToFirst()) {
+            int id = cursor.getInt(0); //The 0 is the column index, we only have 1 column, so the index is 0
             item.setID(id);
+            Log.v("New Scorecard Id", id+"");
         }
 
         List<Player> playerArray = new ArrayList<Player>();
@@ -589,30 +612,10 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
         for (Player each: playerArray){
             values.clear();
 
-            values.put(COLUMN_SPID, each.getPID());
+            values.put(COLUMN_SPLAYERID, each.getPID());
             values.put(COLUMN_SID, item.getID());
-
-
-            StringBuilder concatScores = new StringBuilder();
-            for(Integer eachScore: item.getScores().get(each)) {
-                //concatenate every score into a string, use "," between each score for
-                //future delimiting
-                concatScores.append(""+eachScore);
-                concatScores.append(",");
-            }
-            values.put(COLUMN_SCSCORES, concatScores.toString());
-
-
-            StringBuilder concatPutts = new StringBuilder();
-            for(Integer eachPutt: item.getPutts().get(each)) {
-                //concatenate every score into a string, use "," between each score for
-                //future delimiting
-                concatScores.append(""+eachPutt);
-                concatScores.append(",");
-            }
-            values.put(COLUMN_SCPUTTS, concatPutts.toString());
-
-
+            values.put(COLUMN_SCSCORES, listToString(item.getScores().get(each)));
+            values.put(COLUMN_SCPUTTS, listToString(item.getPutts().get(each)));
             db.insert(PLAYER_SCORES, null, values);
 
         }
@@ -621,7 +624,7 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
     }
 
 
-    public void updateScorecardItem(SQLiteDatabase db, Scorecard item) {
+    private void updateScorecardItem(SQLiteDatabase db, Scorecard item) {
         // prepare values
         ContentValues values = new ContentValues();
 
@@ -631,39 +634,36 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
         for (Player each: playerArray){
             values.clear();
 
-            values.put(COLUMN_SPID, each.getPID());
+            values.put(COLUMN_SPLAYERID, each.getPID());
             values.put(COLUMN_SID, item.getID());
-
-
-            StringBuilder concatScores = new StringBuilder();
-            for(Integer eachScore: item.getScores().get(each)) {
-                //concatenate every score into a string, use "," between each score for
-                //future delimiting
-                concatScores.append(""+eachScore);
-                concatScores.append(",");
-            }
-            values.put(COLUMN_SCSCORES, concatScores.toString());
-
-
-            StringBuilder concatPutts = new StringBuilder();
-            for(Integer eachPutt: item.getPutts().get(each)) {
-                //concatenate every score into a string, use "," between each score for
-                //future delimiting
-                concatScores.append(""+eachPutt);
-                concatScores.append(",");
-            }
-            values.put(COLUMN_SCPUTTS, concatPutts.toString());
-
-
-            db.insert(PLAYER_SCORES, null, values);
+            values.put(COLUMN_SCSCORES, listToString(item.getScores().get(each)));
+            values.put(COLUMN_SCPUTTS, listToString(item.getPutts().get(each)));
 
             db.update(PLAYER_SCORES, values,
-                    COLUMN_ID + "=?",
-                    new String[]{""+each.getPID()});
+                    COLUMN_SID + "=? AND "
+                    + COLUMN_SPLAYERID + "=?",
+                    new String[]{""+item.getID(),""+each.getPID()});
 
         }
 
 
+    }
+
+    private String listToString(ArrayList<Integer> list){
+        StringBuilder string = new StringBuilder();
+        for(Integer i: list){
+            string.append(i+",");
+        }
+        return string.substring(0,string.lastIndexOf(","));
+    }
+
+    private ArrayList<Integer> stringToList(String str){
+        ArrayList<Integer> l = new ArrayList<>();
+        for (String s : str.split(",")) {
+            if (!s.equals(""))
+                l.add(Integer.valueOf(s));
+        }
+        return l;
     }
 
 }

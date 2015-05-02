@@ -34,6 +34,7 @@ public class ScorecardActivity extends Activity {
     private TextView par;
     private Map<Button,Player> buttonToPlayer;
     public static String EXTRA_MESSAGE = "SCORECARD";
+    private DGSDatabaseHelper dbHelp;
 
 
     @Override
@@ -42,11 +43,17 @@ public class ScorecardActivity extends Activity {
         setContentView(R.layout.activity_scorecard);
 
         Intent intent = getIntent();
+        dbHelp = new DGSDatabaseHelper(this);
         String courseName = intent.getStringExtra(CourseSelect.EXTRA_MESSAGE);
         ArrayList<String> playerName = intent.getStringArrayListExtra(PlayerSelect.EXTRA_MESSAGE);
         Log.v("Course", courseName);
         String str = "[";
-        Course currentCourse = (new DGSDatabaseHelper(this)).getCourseByName(courseName);
+        Course currentCourse = dbHelp.getCourseByName(courseName);
+        Log.v(courseName+ " id", currentCourse.getID()+"");
+        if(currentCourse == null){
+            // Do some error stuff
+
+        }
         for(Integer s: currentCourse.getPars())
             str += s + " ";
         str += "]";
@@ -60,8 +67,14 @@ public class ScorecardActivity extends Activity {
         mScorecard.setCourse(currentCourse);
         ArrayList<Player> pArraylist = new ArrayList<Player>();
         for(String s: playerName){
-            Player p = new Player(s);
-            pArraylist.add(p);
+            Player p = dbHelp.getPlayerByName(s);
+            if(p != null) {
+                pArraylist.add(p);
+                Log.v(s+" id", p.getPID()+"");
+            }
+            else {
+                // do some error stuff
+            }
 
         }
         course.setText(courseName);
@@ -160,17 +173,15 @@ public class ScorecardActivity extends Activity {
             }
         });
 
+        saveScorecard();
+
 
     }
 
     private void showSummary() {
-
+        saveScorecard();
         Intent intent = new Intent(this, ScorecardSummary.class);
-        Map<Player,ArrayList<Integer>> allScores = mScorecard.getScores();
-        HashMap<String, ArrayList<Integer>> serializableScores = new HashMap<String, ArrayList<Integer>>();
-        for(Player p: allScores.keySet())
-            serializableScores.put(p.getName(),allScores.get(p));
-        intent.putExtra(EXTRA_MESSAGE,serializableScores);
+        intent.putExtra(EXTRA_MESSAGE,mScorecard.getID());
         startActivity(intent);
 
     }
@@ -271,5 +282,10 @@ public class ScorecardActivity extends Activity {
         else
             underOverStr += "(+" + diff + ")";
         p.getUnderOver().setText(underOverStr);
+    }
+
+    private void saveScorecard(){
+        dbHelp.addScorecardItem(mScorecard);
+        Log.v("this scorecard id", mScorecard.getID()+"");
     }
 }
