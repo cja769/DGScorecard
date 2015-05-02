@@ -1,18 +1,81 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="dgs.dgscorecard.EditPlayer"
-    android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools" android:layout_width="fill_parent"
+android:layout_height="fill_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+android:paddingRight="@dimen/activity_horizontal_margin"
+android:paddingTop="@dimen/activity_vertical_margin"
+android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".NewScorecard"
+android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
+
+<RelativeLayout
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:id="@+id/cs_title_container">
+
+    <me.grantland.widget.AutofitTextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
-        android:id="@+id/textView20"
-        android:layout_gravity="center_horizontal"
-        android:textSize="50dp" />
-</LinearLayout>
+        android:text="@string/edit_players_title"
+        android:id="@+id/edit_players_title"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textSize="50sp"
+        android:gravity="center_horizontal"
+        android:maxLines="2" />
+</RelativeLayout>
+
+<ScrollView
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/cs_checkbox_scroll"
+    android:layout_below="@+id/cs_title_container">
+
+</ScrollView>
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/cs_button_scroll"
+    android:layout_alignParentBottom="true">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ps_button_container">
+
+        <Button
+            android:layout_width="210dp"
+            android:layout_height="wrap_content"
+            android:text="Delete"
+            android:id="@+id/edit_player_delete"
+            android:layout_gravity="center_horizontal"
+            android:importantForAccessibility="yes" />
+    </LinearLayout>
+</ScrollView>
+
+<ScrollView
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/ps_checkbox_container"
+    android:layout_above="@+id/cs_button_scroll"
+    android:layout_below="@+id/cs_checkbox_scroll">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:id="@+id/edit_player_checkbox" />
+    </LinearLayout>
+</ScrollView>
+
+</RelativeLayout>
