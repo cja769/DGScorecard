@@ -285,7 +285,8 @@ public class ScorecardActivity extends Activity {
     }
 
     private void saveScorecard(){
+        Log.v("this scored id was", mScorecard.getID()+"");
         dbHelp.addScorecardItem(mScorecard);
-        Log.v("this scorecard id", mScorecard.getID()+"");
+        Log.v("this scorecard id is", mScorecard.getID()+"");
     }
 }

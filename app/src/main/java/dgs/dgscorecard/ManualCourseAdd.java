@@ -238,6 +238,10 @@ public class ManualCourseAdd extends Activity {
         courseList.add(newCourse);
 
         mDatabaseHelper.addCourseItems(courseList);
+        ArrayList<String> courses = mDatabaseHelper.dumpCourses();
+        for(String s: courses){
+            Log.v(s.substring(0,s.indexOf(":")), s.substring(s.indexOf(":")+1));
+        }
 
         if(c == CourseSelect.class)
             intent.putStringArrayListExtra(PlayerSelect.EXTRA_MESSAGE,getIntent().getStringArrayListExtra(PlayerSelect.EXTRA_MESSAGE));

@@ -42,6 +42,10 @@ public class ScorecardSummary extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scorecard_summary);
 
+        ArrayList<String> scorecards = (new DGSDatabaseHelper(this)).dumpScorecards();
+        for(String s: scorecards){
+            Log.v("",s);
+        }
         LinearLayout linLayout = (LinearLayout) findViewById(R.id.ss_linear_layout);
         linLayout.removeAllViews();
         allTextViews = new ArrayList<TextView>();

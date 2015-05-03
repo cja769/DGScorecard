@@ -572,6 +572,30 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
 
     }
 
+    public ArrayList<String> dumpCourses(){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(COURSE_ITEMS, new String[] {COLUMN_ID, COLUMN_CNAME},null, null, null,null,null);
+        cursor.moveToFirst();
+        ArrayList<String> courses = new ArrayList<String>();
+        while(!cursor.isAfterLast()){
+            courses.add(cursor.getString(1) + ": " + cursor.getInt(0));
+            cursor.moveToNext();
+        }
+        return courses;
+    }
+
+    public ArrayList<String> dumpScorecards(){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(SCORECARD_ITEMS, new String[] {COLUMN_ID, COLUMN_SCOURSEID},null, null, null,null,null);
+        cursor.moveToFirst();
+        ArrayList<String> scoreCards = new ArrayList<String>();
+        while(!cursor.isAfterLast()){
+            scoreCards.add("Card id: " + cursor.getInt(0) + ": " + "Course id: " + cursor.getInt(1));
+            cursor.moveToNext();
+        }
+        return scoreCards;
+    }
+
     public void addScorecardItem(Scorecard item) {
         SQLiteDatabase db = getWritableDatabase();
         if(item.getID() == -1)
@@ -598,8 +622,8 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
         db.insert(SCORECARD_ITEMS, null, values);
 
         //get scorecard's database ID
-        Cursor cursor = db.query(SCORECARD_ITEMS, new String[]{COLUMN_ID,},
-                null, null, null, null, null, null
+        Cursor cursor = db.query(SCORECARD_ITEMS, new String[]{COLUMN_ID}, COLUMN_SDATE + "= ?",
+                new String[] {s}, null, null, null, null
         ); // get all rows
         if (cursor != null && cursor.moveToFirst()) {
             int id = cursor.getInt(0); //The 0 is the column index, we only have 1 column, so the index is 0
