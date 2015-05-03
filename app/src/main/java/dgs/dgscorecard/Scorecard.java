@@ -108,7 +108,14 @@ public class Scorecard {
     }
 
     public void setPlayers(ArrayList<Player> players){
+        if(mScores.keySet().size() == 0 && mPutts.keySet().size() == 0){
+            setScoreAndPuttDefaults(players);
+        }
         mPlayers = players;
+
+    }
+
+    private void setScoreAndPuttDefaults(ArrayList<Player> players){
         for(Player player: players){
             ArrayList<Integer> s = new ArrayList<Integer>(mCourse.getNumHoles());
             for(int i = 0; i < mCourse.getNumHoles(); i++)
@@ -120,7 +127,6 @@ public class Scorecard {
             mPutts.put(player, l);
         }
         setOrderForHole(players, 0);
-
     }
 
     public int calculateTotal(Player player){

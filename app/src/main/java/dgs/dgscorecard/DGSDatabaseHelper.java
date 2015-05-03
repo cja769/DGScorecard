@@ -196,7 +196,6 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
 
     public Course getCourseByID(int ID){
 
-        Log.v("course id",ID+"");
         // obtain a readable database
         SQLiteDatabase db = getReadableDatabase();
 
@@ -271,7 +270,6 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
             ArrayList<Integer> pList = new ArrayList<>();
             for(String par: pars)
                 pList.add(Integer.parseInt(par));
-            Log.v("getCourse id", cursor.getInt(4)+"");
 
             Course item = new Course(cursor.getInt(0), pList,
                     cursor.getString(2), cursor.getInt(4));
@@ -378,7 +376,6 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
  */
     public Scorecard getFullScorecard(int id, Context context) {
 
-        Log.v("Scorecard id", id+"");
         if(id == -1)
             return null;
         // obtain a readable database
@@ -425,7 +422,6 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
             for (cursor.moveToFirst(); cursor.isAfterLast() == false; cursor.moveToNext()) {
 
 
-                Log.v("Player id in Scorecard", "" + cursor.getString(0));
                 //add player to arraylist that will be added to scorecard
                 // send query
                 Cursor cursor2 = db.query(PLAYER_ITEMS, new String[]{COLUMN_ID,
@@ -442,7 +438,6 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
 
                     // add scores to the scorecard
                     String str = cursor.getString(2);
-                    Log.v(newPlayer.getName() + " score", str);
                     mScores.put(newPlayer, stringToList(str));
 
                     //add putts to the scorecard
@@ -450,6 +445,7 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
                     mPutts.put(newPlayer, stringToList(str));
                     // close the cursor
                     cursor2.close();
+
                 }
 
             }
@@ -457,6 +453,7 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
             item.setScores(mScores);
             item.setPutts(mPutts);
             item.setPlayers(items);
+
 
 
             // close the cursor
@@ -628,7 +625,6 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
         if (cursor != null && cursor.moveToFirst()) {
             int id = cursor.getInt(0); //The 0 is the column index, we only have 1 column, so the index is 0
             item.setID(id);
-            Log.v("New Scorecard Id", id+"");
         }
 
         List<Player> playerArray = new ArrayList<Player>();
@@ -684,9 +680,11 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
 
     private ArrayList<Integer> stringToList(String str){
         ArrayList<Integer> l = new ArrayList<>();
-        for (String s : str.split(",")) {
-            if (!s.equals(""))
-                l.add(Integer.valueOf(s));
+        String[] s = str.split(",");
+        for (String st : s) {
+            if (!st.equals("")) {
+                l.add(Integer.parseInt(st));
+            }
         }
         return l;
     }
