@@ -7,67 +7,35 @@ android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".NewScore
 android:orientation="vertical">
 
 
-<RelativeLayout
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignParentTop="true"
-    android:id="@+id/cs_title_container">
-
-    <me.grantland.widget.AutofitTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/edit_players_title"
-        android:id="@+id/edit_players_title"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:textSize="50sp"
-        android:gravity="center_horizontal"
-        android:maxLines="2" />
-</RelativeLayout>
-
-<ScrollView
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/cs_checkbox_scroll"
-    android:layout_below="@+id/cs_title_container">
-
-</ScrollView>
-
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/cs_button_scroll"
-    android:layout_alignParentBottom="true">
-
     <LinearLayout
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/ps_button_container">
+        android:id="@+id/ep_add_ll">
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/ep_edit_text_add"
+            android:singleLine="false"
+            android:hint="Enter Name" />
 
         <Button
-            android:layout_width="210dp"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Delete"
-            android:id="@+id/edit_player_delete"
-            android:layout_gravity="center_horizontal"
-            android:importantForAccessibility="yes" />
+            android:text="Add Player"
+            android:id="@+id/ep_add_player" />
     </LinearLayout>
-</ScrollView>
 
-<ScrollView
+    <ScrollView
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:id="@+id/ps_checkbox_container"
-    android:layout_above="@+id/cs_button_scroll"
-    android:layout_below="@+id/cs_checkbox_scroll">
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+    android:fillViewport="false"
+        android:layout_above="@+id/ps_button_container"
+        android:layout_below="@+id/ep_add_ll">
 
         <LinearLayout
             android:orientation="vertical"
@@ -75,7 +43,22 @@ android:orientation="vertical">
             android:layout_height="wrap_content"
             android:gravity="start"
             android:id="@+id/edit_player_checkbox" />
+    </ScrollView>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ps_button_container"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete"
+            android:id="@+id/edit_player_delete"
+            android:layout_gravity="center_horizontal"
+            android:importantForAccessibility="yes" />
     </LinearLayout>
-</ScrollView>
 
 </RelativeLayout>

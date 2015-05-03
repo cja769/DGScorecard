@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
@@ -44,18 +45,42 @@ public class EditPlayer extends Activity {
                 removePlayer();
             }
         });
+
+        findViewById(R.id.ep_add_player).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText et = (EditText) findViewById(R.id.ep_edit_text_add);
+                addPlayer(et.getText().toString());
+                et.setText("");
+            }
+        });
     }
 
     private void removePlayer() {
         LinearLayout ll = (LinearLayout) findViewById(R.id.edit_player_checkbox);
         int numOfBoxes = ll.getChildCount();
-        ArrayList<String> players = new ArrayList<String>();
+        ArrayList<CheckBox> players = new ArrayList<>();
         for(int i = 0; i < numOfBoxes; i++){
             CheckBox cb = (CheckBox) ll.getChildAt(i);
             if(cb.isChecked()) {
-                //delete
+                players.add(cb);
             }
         }
+        for(CheckBox s: players) {
+            mDatabaseHelper.deletePlayer(s.getText().toString());
+            ll.removeView(s);
+        }
+    }
+
+    private void addPlayer(String name){
+        LinearLayout ll = (LinearLayout) findViewById(R.id.edit_player_checkbox);
+        Player p = new Player(name);
+        ArrayList<Player> list = new ArrayList<>();
+        list.add(p);
+        mDatabaseHelper.addPlayerItems(list);
+        CheckBox cb = new CheckBox(this);
+        cb.setText(name);
+        ll.addView(cb);
     }
 
 

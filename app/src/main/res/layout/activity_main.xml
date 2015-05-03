@@ -58,13 +58,6 @@
             <Button
                 android:layout_width="210dp"
                 android:layout_height="wrap_content"
-                android:text="Test Summary"
-                android:id="@+id/main_test_summary"
-                android:layout_gravity="center_horizontal" />
-
-            <Button
-                android:layout_width="210dp"
-                android:layout_height="wrap_content"
                 android:text="Reset Database"
                 android:id="@+id/main_reset_db"
                 android:layout_gravity="center_horizontal" />

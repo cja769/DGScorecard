@@ -42,6 +42,7 @@ public class ManualCourseAdd extends Activity {
     private SharedPreferences mPrefs;
     private int num_courses;
     private Class nextClass;
+    private boolean newCourse;
 
     private DGSDatabaseHelper mDatabaseHelper;
 
@@ -57,11 +58,32 @@ public class ManualCourseAdd extends Activity {
         pars = new HashMap<Integer, Integer>();
         buttonPars = new HashMap<Button, Integer>();
         AutofitTextView title = (AutofitTextView) findViewById(R.id.mca_title);
-        title.setText(getIntent().getStringExtra(CourseSelect.EXTRA_MESSAGE));
         Button moreHoles = (Button) findViewById(R.id.mca_more_holes);
         Button lessHoles = (Button) findViewById(R.id.mca_less_holes);
+
+        ArrayList<Integer> pars = new ArrayList<>();
+        for(int i = 0; i < 18; i++) pars.add(3);
+
+        final Button startButton = (Button) findViewById(R.id.mca_start);
+        nextClass = ScorecardActivity.class;
+        String c = getIntent().getStringExtra(ManualCourseAdd.NEXT_ACTIVITY);
+        if(c.equals("CourseSelect") || c.equals("EditCourse")){
+            startButton.setText("Finish");
+            if(c.equals("CourseSelect")) {
+                nextClass = CourseSelect.class;
+                title.setText(getIntent().getStringExtra(CourseSelect.EXTRA_MESSAGE));
+            }
+            else {
+                nextClass = EditCourse.class;
+                String courseName = getIntent().getStringExtra(EditCourse.EXTRA_MESSAGE);
+                title.setText(courseName);
+                newCourse = getIntent().getBooleanExtra(EditCourse.NEW_COURSE, true);
+                if(!newCourse)
+                    pars = getCoursePars(courseName);
+            }
+        }
         holes = 18;
-        LinearLayout ll = drawHoles(18,1);
+        LinearLayout ll = drawHoles(18,1, pars);
         LinearLayout holeContainer = (LinearLayout) findViewById(R.id.mca_hole_container);
         holeContainer.removeAllViews();
 
@@ -74,7 +96,9 @@ public class ManualCourseAdd extends Activity {
 
         moreHoles.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                addHoles(1, (LinearLayout) findViewById(R.id.mca_hole_container));
+                ArrayList<Integer> pars = new ArrayList<Integer>();
+                pars.add(3);
+                addHoles(1, (LinearLayout) findViewById(R.id.mca_hole_container), pars);
                 TextView holeText = (TextView) findViewById(R.id.mca_total_holes);
                 holes++;
                 holeText.setText(holes + "");
@@ -85,19 +109,13 @@ public class ManualCourseAdd extends Activity {
             public void onClick(View v) {
                 if(holes-1 <= 0)
                     return;
-                addHoles(-1,(LinearLayout) findViewById(R.id.mca_hole_container));
+                addHoles(-1,(LinearLayout) findViewById(R.id.mca_hole_container), new ArrayList<Integer>());
                 TextView holeText = (TextView) findViewById(R.id.mca_total_holes);
                 holes--;
                 holeText.setText(holes+"");
             }
         });
 
-        final Button startButton = (Button) findViewById(R.id.mca_start);
-        nextClass = ScorecardActivity.class;
-        if(getIntent().getStringExtra(ManualCourseAdd.NEXT_ACTIVITY).equals("CourseSelect")){
-            startButton.setText("Finish");
-            nextClass = CourseSelect.class;
-        }
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 sendMessage(nextClass);
@@ -141,7 +159,7 @@ public class ManualCourseAdd extends Activity {
         ed.apply();
     }
 
-    private void addHoles(int numHoles, LinearLayout ll){
+    private void addHoles(int numHoles, LinearLayout ll, ArrayList<Integer> pars){
         if(numHoles < 0){
             numHoles = Math.abs(numHoles);
             for(int i = 0; i < numHoles; i++){
@@ -152,7 +170,7 @@ public class ManualCourseAdd extends Activity {
 
         }
         else{
-            LinearLayout temp = drawHoles(numHoles,holes+1);
+            LinearLayout temp = drawHoles(numHoles,holes+1, pars);
             for(int i = 0; i < numHoles; i++){
                 View child = temp.getChildAt(0);
                 temp.removeView(child);
@@ -163,7 +181,7 @@ public class ManualCourseAdd extends Activity {
 
     }
 
-    private LinearLayout drawHoles(int numHoles, int startHoleNumber){
+    private LinearLayout drawHoles(int numHoles, int startHoleNumber, ArrayList<Integer> coursePars){
         LinearLayout ll = new LinearLayout(this);
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -174,7 +192,8 @@ public class ManualCourseAdd extends Activity {
             TextView hole = (TextView) item.findViewById(R.id.mca_hole);
             TextView par = (TextView) item.findViewById(R.id.mca_hole_par);
             hole.setText("Hole " + startHoleNumber + "");
-            pars.put(startHoleNumber,3);
+            par.setText(coursePars.get(i)+"");
+            pars.put(startHoleNumber, coursePars.get(i));
             Button less = (Button) item.findViewById(R.id.mca_less_par);
             Button more = (Button) item.findViewById(R.id.mca_more_par);
             parFields.put(more, par);
@@ -230,14 +249,17 @@ public class ManualCourseAdd extends Activity {
         me.grantland.widget.AutofitTextView courseEditText = (me.grantland.widget.AutofitTextView)findViewById(R.id.mca_title);
         String name = courseEditText.getText().toString();
 
-        Course newCourse = new Course(holes, allPars, name, this, num_courses);
+        Course course = new Course(holes, allPars, name, this, num_courses);
 
         ++num_courses;
 
         List<Course> courseList = new ArrayList<>();
-        courseList.add(newCourse);
+        courseList.add(course);
 
-        mDatabaseHelper.addCourseItems(courseList);
+        if(newCourse)
+            mDatabaseHelper.addCourseItems(courseList);
+        else
+            mDatabaseHelper.updateCourse(course);
         ArrayList<String> courses = mDatabaseHelper.dumpCourses();
         for(String s: courses){
             Log.v(s.substring(0,s.indexOf(":")), s.substring(s.indexOf(":")+1));
@@ -246,6 +268,12 @@ public class ManualCourseAdd extends Activity {
         if(c == CourseSelect.class)
             intent.putStringArrayListExtra(PlayerSelect.EXTRA_MESSAGE,getIntent().getStringArrayListExtra(PlayerSelect.EXTRA_MESSAGE));
         startActivity(intent);
+
+    }
+
+    private ArrayList<Integer> getCoursePars(String course) {
+        Course c = mDatabaseHelper.getCourseByName(course);
+        return c.getPars();
 
     }
 }

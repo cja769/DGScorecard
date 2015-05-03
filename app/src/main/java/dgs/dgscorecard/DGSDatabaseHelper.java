@@ -290,6 +290,39 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public boolean deleteCourse(String course){
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.query(COURSE_ITEMS, new String[] {COLUMN_ID, COLUMN_CNAME}, COLUMN_CNAME + "=?",
+                                    new String[] {""+course}, null, null, null, null);
+        if(cursor != null){
+            cursor.moveToFirst();
+            Cursor cursor2 = db.query(SCORECARD_ITEMS, new String[] {COLUMN_ID}, COLUMN_SCOURSEID + "=?",
+                                    new String[] {""+cursor.getInt(0)}, null, null, null);
+            if(cursor2 != null) {
+                cursor2.moveToFirst();
+                for(; !cursor2.isAfterLast(); cursor2.moveToNext()){
+                    deleteScorecard(cursor2.getInt(0));
+                }
+            }
+        }
+        int rows = db.delete(COURSE_ITEMS, COLUMN_CNAME + " = '" + course + "'", null);
+        if(rows == 0 )
+            return false;
+        else
+            return true;
+    }
+
+    public boolean deleteScorecard(int id){
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(PLAYER_SCORES, COLUMN_SID + " = " + id, null);
+        int rows = db.delete(SCORECARD_ITEMS, COLUMN_ID + " = " + id, null);
+        if(rows == 0)
+            return false;
+        else
+            return true;
+    }
+
+
     public Player getPlayerByName(String name){
 
         // obtain a readable database
@@ -324,6 +357,28 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
         }
 
     }
+
+    public boolean deletePlayer(String name){
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.query(PLAYER_ITEMS,new String[]{COLUMN_ID},COLUMN_NAME + " = '" + name + "'", null, null, null, null);
+        if(cursor == null)
+            return false;
+        cursor.moveToFirst();
+        int id = cursor.getInt(0);
+        cursor.close();
+        int rows = db.delete(PLAYER_ITEMS, COLUMN_ID + " = " + id, null);
+        if(rows > 0){
+            db.delete(PLAYER_SCORES, COLUMN_SPLAYERID + " = " + id, null);
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public boolean deletePlayer(Player p){
+        return deletePlayer(p.getName());
+    }
+
     /**
      * retrieve all basic info for all scorecards: date and course
      */
@@ -555,6 +610,26 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
      * Add a new item
      */
     private void addCourseItem(SQLiteDatabase db, Course item) {
+
+        ContentValues values = setCourseValues(item);
+        // add the row
+        db.insert(COURSE_ITEMS, null, values);
+        db.close();
+
+    }
+
+    public boolean updateCourse(Course name){
+        Log.v("In update Course", name.getName());
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = setCourseValues(name);
+        int rows = db.update(COURSE_ITEMS, values, COLUMN_CNAME + " = '" + name.getName() + "'", null);
+        if(rows == 0)
+            return false;
+        else
+            return true;
+    }
+
+    private ContentValues setCourseValues(Course item) {
         // prepare values
         ContentValues values = new ContentValues();
         values.put(COLUMN_HOLES, item.getNumHoles());
@@ -562,11 +637,7 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
         values.put(COLUMN_INDIVPARS, listToString(pars));
         values.put(COLUMN_CNAME, item.getName());
         values.put(COLUMN_PAR, item.getPar());
-
-        // add the row
-        db.insert(COURSE_ITEMS, null, values);
-        db.close();
-
+        return values;
     }
 
     public ArrayList<String> dumpCourses(){
