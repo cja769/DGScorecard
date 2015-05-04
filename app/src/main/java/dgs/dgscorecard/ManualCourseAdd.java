@@ -57,12 +57,13 @@ public class ManualCourseAdd extends Activity {
         parFields = new HashMap<Button, TextView>();
         pars = new HashMap<Integer, Integer>();
         buttonPars = new HashMap<Button, Integer>();
+        newCourse = true;
         AutofitTextView title = (AutofitTextView) findViewById(R.id.mca_title);
         Button moreHoles = (Button) findViewById(R.id.mca_more_holes);
         Button lessHoles = (Button) findViewById(R.id.mca_less_holes);
 
-        ArrayList<Integer> pars = new ArrayList<>();
-        for(int i = 0; i < 18; i++) pars.add(3);
+        ArrayList<Integer> allPars = new ArrayList<>();
+        for(int i = 0; i < 18; i++) allPars.add(3);
 
         final Button startButton = (Button) findViewById(R.id.mca_start);
         nextClass = ScorecardActivity.class;
@@ -78,12 +79,15 @@ public class ManualCourseAdd extends Activity {
                 String courseName = getIntent().getStringExtra(EditCourse.EXTRA_MESSAGE);
                 title.setText(courseName);
                 newCourse = getIntent().getBooleanExtra(EditCourse.NEW_COURSE, true);
+                moreHoles.setEnabled(false);
+                lessHoles.setEnabled(false);
                 if(!newCourse)
-                    pars = getCoursePars(courseName);
+                    allPars = getCoursePars(courseName);
             }
         }
-        holes = 18;
-        LinearLayout ll = drawHoles(18,1, pars);
+        holes = allPars.size();
+        ((TextView) findViewById(R.id.mca_total_holes)).setText(holes+"");
+        LinearLayout ll = drawHoles(holes,1, allPars);
         LinearLayout holeContainer = (LinearLayout) findViewById(R.id.mca_hole_container);
         holeContainer.removeAllViews();
 
@@ -159,7 +163,7 @@ public class ManualCourseAdd extends Activity {
         ed.apply();
     }
 
-    private void addHoles(int numHoles, LinearLayout ll, ArrayList<Integer> pars){
+    private void addHoles(int numHoles, LinearLayout ll, ArrayList<Integer> allPars){
         if(numHoles < 0){
             numHoles = Math.abs(numHoles);
             for(int i = 0; i < numHoles; i++){
@@ -170,7 +174,7 @@ public class ManualCourseAdd extends Activity {
 
         }
         else{
-            LinearLayout temp = drawHoles(numHoles,holes+1, pars);
+            LinearLayout temp = drawHoles(numHoles,holes+1, allPars);
             for(int i = 0; i < numHoles; i++){
                 View child = temp.getChildAt(0);
                 temp.removeView(child);

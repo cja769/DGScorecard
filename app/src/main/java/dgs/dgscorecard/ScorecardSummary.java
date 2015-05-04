@@ -76,8 +76,14 @@ public class ScorecardSummary extends Activity {
             TableRow parRow = (TableRow) item.findViewById(R.id.ss_par_row);
             tempTableLayout.removeView(nameR);
             for(int j = 1; j < holeRow.getChildCount(); j++){
-                ((TextView) holeRow.getChildAt(j)).setText(((i*9) + j) + "");
-                ((TextView) parRow.getChildAt(j)).setText((mScorecard.getCourse().getPars().get(i*9 + j - 1))+"");
+                if(i*9 + j - 1 >= holes) {
+                    ((TextView) holeRow.getChildAt(j)).setText("-");
+                    ((TextView) parRow.getChildAt(j)).setText("-");
+                }
+                else {
+                    ((TextView) holeRow.getChildAt(j)).setText(((i * 9) + j) + "");
+                    ((TextView) parRow.getChildAt(j)).setText((mScorecard.getCourse().getPars().get(i * 9 + j - 1)) + "");
+                }
             }
             for (Player p : allScores.keySet()) {
                 View item2 = inflater.inflate(R.layout.activity_scorecard_summary, null);
@@ -85,7 +91,10 @@ public class ScorecardSummary extends Activity {
                 int count = nameRow.getChildCount();
                 ((AutofitTextView) nameRow.getChildAt(0)).setText(p.getName());
                 for (int j = 1; j < count; j++) {
-                    ((TextView) nameRow.getChildAt(j)).setText(allScores.get(p).get((i*9) + j - 1) + "");
+                    if(i*9 + j - 1 >= holes)
+                        ((TextView) nameRow.getChildAt(j)).setText("-");
+                    else
+                        ((TextView) nameRow.getChildAt(j)).setText(allScores.get(p).get((i*9) + j - 1) + "");
                 }
                 ((TableLayout) nameRow.getParent()).removeView(nameRow);
                 tempTableLayout.addView(nameRow);
@@ -99,7 +108,7 @@ public class ScorecardSummary extends Activity {
         (findViewById(R.id.ss_finish)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendMessage(MainActivity.class);
+                goToMain();
             }
         });
 
@@ -152,8 +161,14 @@ public class ScorecardSummary extends Activity {
 //        Log.v("Stuff",getFilesDir().getAbsolutePath());
 //    }
 
-    public void sendMessage(Class c) {
+    private void sendMessage(Class c) {
         Intent intent = new Intent(this, c);
+        startActivity(intent);
+    }
+
+    private void goToMain(){
+        Intent intent = new Intent(this,MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 }

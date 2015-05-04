@@ -110,6 +110,8 @@ public class PlayerSelect extends Activity {
         EditText nameEditText = (EditText)findViewById(R.id.ps_enter_name);
         LinearLayout ll = (LinearLayout) findViewById(R.id.ps_checkbox_field);
         String newName = nameEditText.getText().toString();
+        if(newName.equals(""))
+            return;
         //prevPlayers.add(newName);
         CheckBox cb = new CheckBox(this);
         cb.setText(newName);

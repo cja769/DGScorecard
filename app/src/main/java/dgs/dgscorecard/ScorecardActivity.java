@@ -44,39 +44,53 @@ public class ScorecardActivity extends Activity {
 
         Intent intent = getIntent();
         dbHelp = new DGSDatabaseHelper(this);
+        int scorecardId = intent.getIntExtra(EditScorecard.EXTRA_MESSAGE, -1);
         String courseName = intent.getStringExtra(CourseSelect.EXTRA_MESSAGE);
         ArrayList<String> playerName = intent.getStringArrayListExtra(PlayerSelect.EXTRA_MESSAGE);
-        Log.v("Course", courseName);
-        String str = "[";
-        Course currentCourse = dbHelp.getCourseByName(courseName);
-        Log.v(courseName+ " id", currentCourse.getID()+"");
-        if(currentCourse == null){
-            // Do some error stuff
+        ArrayList<Player> pArraylist = new ArrayList<Player>();
+
+        if(scorecardId != -1) {
+
+            mScorecard = dbHelp.getFullScorecard(scorecardId,this);
+            pArraylist = mScorecard.getPlayers();
+            courseName = mScorecard.getCourse().getName();
+        }
+        else {
+            Log.v("Course", courseName);
+            String str = "[";
+            Course currentCourse = dbHelp.getCourseByName(courseName);
+            Log.v(courseName + " id", currentCourse.getID() + "");
+            if (currentCourse == null) {
+                // Do some error stuff
+
+            }
+            for (Integer s : currentCourse.getPars())
+                str += s + " ";
+            str += "]";
+            Log.v("Pars", str);
+
+            mScorecard = new Scorecard();
+            mScorecard.setCourse(currentCourse);
+            for(String s: playerName){
+                Player p = dbHelp.getPlayerByName(s);
+                if(p != null) {
+                    pArraylist.add(p);
+                    Log.v(s+" id", p.getPID()+"");
+                }
+                else {
+                    // do some error stuff
+                }
+
+            }
+            mScorecard.setPlayers(pArraylist);
 
         }
-        for(Integer s: currentCourse.getPars())
-            str += s + " ";
-        str += "]";
-        Log.v("Pars", str);
-        TextView course = (TextView) findViewById(R.id.sc_course_name);
 
+        TextView course = (TextView) findViewById(R.id.sc_course_name);
         hole = (TextView) findViewById(R.id.sc_hole_number);
         par = (TextView) findViewById(R.id.sc_par);
         buttonToPlayer = new HashMap<Button, Player>();
-        mScorecard = new Scorecard();
-        mScorecard.setCourse(currentCourse);
-        ArrayList<Player> pArraylist = new ArrayList<Player>();
-        for(String s: playerName){
-            Player p = dbHelp.getPlayerByName(s);
-            if(p != null) {
-                pArraylist.add(p);
-                Log.v(s+" id", p.getPID()+"");
-            }
-            else {
-                // do some error stuff
-            }
 
-        }
         course.setText(courseName);
 
         LinearLayout ll = (LinearLayout) findViewById(R.id.sc_all_scores);
@@ -118,6 +132,13 @@ public class ScorecardActivity extends Activity {
                 @Override
                 public void onClick(View v) {
                     Player p = buttonToPlayer.get(v);
+                    try{
+                        int putt = Integer.parseInt(p.getPuttField().getText()+"");
+                        int score = Integer.parseInt(p.getScoreField().getText()+"");
+                        if(putt > score-1)
+                            return;
+                    }
+                    catch(NumberFormatException e) {}
                     if(changeTextView(false, 1, p.getScoreField())) {
                         changeTextView(false, null, p.getTotalScore());
                         setUnderOver(p);
@@ -128,6 +149,14 @@ public class ScorecardActivity extends Activity {
             morePutt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Player p = buttonToPlayer.get(v);
+                    try{
+                        int putt = Integer.parseInt(p.getPuttField().getText()+"");
+                        int score = Integer.parseInt(p.getScoreField().getText()+"");
+                        if(putt+1 > score)
+                            return;
+                    }
+                    catch(NumberFormatException e) {}
                     changeTextView(true, null, buttonToPlayer.get(v).getPuttField());
                 }
             });
@@ -144,7 +173,6 @@ public class ScorecardActivity extends Activity {
             ll.addView(playerStuff);
         }
 
-        mScorecard.setPlayers(pArraylist);
         mCurrentHole = 0;
         setViewElements();
 
@@ -221,6 +249,14 @@ public class ScorecardActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        saveScorecard();
+        Intent setIntent = new Intent(this,MainActivity.class);
+        setIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(setIntent);
     }
 
     private void setScores(){

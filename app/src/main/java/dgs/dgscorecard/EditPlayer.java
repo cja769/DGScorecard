@@ -32,8 +32,20 @@ public class EditPlayer extends Activity {
         mPlayer = mDatabaseHelper.getAllPlayerItems(this);
 
         LinearLayout ll = (LinearLayout) findViewById(R.id.edit_player_checkbox);
+        CheckBox cb = new CheckBox(this);
+        cb.setText("Select All");
+        cb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LinearLayout ll = (LinearLayout) findViewById(R.id.edit_player_checkbox);
+                boolean check = ((CheckBox) v).isChecked();
+                for (int i = 0; i < ll.getChildCount(); i++)
+                    ((CheckBox) ll.getChildAt(i)).setChecked(check);
+            }
+        });
+        ll.addView(cb);
         for(int i = 0; i < mPlayer.size(); i++) {
-            CheckBox cb = new CheckBox(this);
+            cb = new CheckBox(this);
             cb.setText(mPlayer.get(i).getName());
             cb.setChecked(false);
             ll.addView(cb);
@@ -60,7 +72,7 @@ public class EditPlayer extends Activity {
         LinearLayout ll = (LinearLayout) findViewById(R.id.edit_player_checkbox);
         int numOfBoxes = ll.getChildCount();
         ArrayList<CheckBox> players = new ArrayList<>();
-        for(int i = 0; i < numOfBoxes; i++){
+        for(int i = 1; i < numOfBoxes; i++){
             CheckBox cb = (CheckBox) ll.getChildAt(i);
             if(cb.isChecked()) {
                 players.add(cb);
@@ -70,9 +82,13 @@ public class EditPlayer extends Activity {
             mDatabaseHelper.deletePlayer(s.getText().toString());
             ll.removeView(s);
         }
+
+        ((CheckBox) ll.getChildAt(0)).setChecked(false);
     }
 
     private void addPlayer(String name){
+        if(name.equals(""))
+            return;
         LinearLayout ll = (LinearLayout) findViewById(R.id.edit_player_checkbox);
         Player p = new Player(name);
         ArrayList<Player> list = new ArrayList<>();

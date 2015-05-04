@@ -398,23 +398,26 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
                 null, null, null, null, null, null
         ); // get all rows
 
+        cursor.moveToFirst();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        try{Date date = formatter.parse(cursor.getString(2));
+        try{
 
+            if (cursor != null) {
+                // add items to the list
+                for (cursor.moveToFirst(); cursor.isAfterLast() == false; cursor.moveToNext()) {
 
-        if (cursor != null) {
-            // add items to the list
-            for (cursor.moveToFirst(); cursor.isAfterLast() == false; cursor.moveToNext()) {
-                items.add(new Scorecard(getCourseByID(Integer.parseInt(cursor.getString(1))),
-                        Integer.parseInt(cursor.getString(0)),
-                        date
-                ));
+                    Date date = formatter.parse(cursor.getString(2));
+                    items.add(new Scorecard(getCourseByID(Integer.parseInt(cursor.getString(1))),
+                            Integer.parseInt(cursor.getString(0)),
+                            date
+                    ));
 
+                }
+
+                // close the cursor
+                cursor.close();
             }
 
-            // close the cursor
-            cursor.close();
-        }
         } catch (ParseException e) {
             //handle exception
         }
@@ -424,6 +427,16 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
 
         // return the list
         return items;
+    }
+
+    public ArrayList<Scorecard> getAllFullScorecards() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(SCORECARD_ITEMS, new String[] {COLUMN_ID}, null, null, null, null, null);
+        ArrayList<Scorecard> all = new ArrayList<>();
+        for(cursor.moveToFirst(); cursor != null && !cursor.isAfterLast(); cursor.moveToNext()){
+            all.add(getFullScorecard(cursor.getInt(0), null));
+        }
+        return all;
     }
 
 /*
@@ -684,6 +697,7 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
 
         Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String s = formatter.format(item.getDate());
+        Log.v("add: Date",s);
 
         values.put(COLUMN_SDATE, s);
 
@@ -722,6 +736,9 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
 
         List<Player> playerArray = new ArrayList<Player>();
         playerArray = item.getPlayers();
+        Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String s = formatter.format(item.getDate());
+        Log.v("update: Date", s);
 
         for (Player each: playerArray){
             values.clear();

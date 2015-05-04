@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -37,8 +38,20 @@ public class EditCourse extends Activity {
         mCourse = mDatabaseHelper.getAllCourseItems(this);
 
         LinearLayout ll = (LinearLayout) findViewById(R.id.edit_courses_checkbox);
+        CheckBox cb = new CheckBox(this);
+        cb.setText("Select All");
+        cb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LinearLayout ll = (LinearLayout) findViewById(R.id.edit_courses_checkbox);
+                boolean check = ((CheckBox) v).isChecked();
+                for(int i = 0; i < ll.getChildCount(); i++)
+                    ((CheckBox) ll.getChildAt(i)).setChecked(check);
+            }
+        });
+        ll.addView(cb);
         for(int i = 0; i < mCourse.size(); i++) {
-            CheckBox cb = new CheckBox(this);
+            cb = new CheckBox(this);
             cb.setText(mCourse.get(i).getName());
             cb.setChecked(false);
             ll.addView(cb);
@@ -65,18 +78,21 @@ public class EditCourse extends Activity {
                 LinearLayout ll = (LinearLayout) findViewById(R.id.edit_courses_checkbox);
                 boolean cont = true;
                 String name = "";
-                for(int i = 0; i < ll.getChildCount() && cont; i++){
+                for(int i = 1; i < ll.getChildCount() && cont; i++){
                     CheckBox cb = (CheckBox) ll.getChildAt(i);
                     if(cb.isChecked()){
                         name = cb.getText()+"";
                         cont = false;
                     }
                 }
-                Intent intent = new Intent(thisContext, ManualCourseAdd.class);
-                intent.putExtra(EXTRA_MESSAGE, name);
-                intent.putExtra(ManualCourseAdd.NEXT_ACTIVITY,"EditCourse");
-                intent.putExtra(NEW_COURSE,false);
-                startActivity(intent);
+
+                if(!cont) {
+                    Intent intent = new Intent(thisContext, ManualCourseAdd.class);
+                    intent.putExtra(EXTRA_MESSAGE, name);
+                    intent.putExtra(ManualCourseAdd.NEXT_ACTIVITY, "EditCourse");
+                    intent.putExtra(NEW_COURSE, false);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -84,14 +100,18 @@ public class EditCourse extends Activity {
             @Override
             public void onClick(View v) {
                 LinearLayout ll = (LinearLayout) findViewById(R.id.edit_courses_checkbox);
-                for(int i = 0; i < ll.getChildCount(); i++){
+                ArrayList<CheckBox> cbs = new ArrayList<CheckBox>();
+                for(int i = 1; i < ll.getChildCount(); i++){
                     CheckBox cb = (CheckBox) ll.getChildAt(i);
                     if(cb.isChecked()){
                         boolean deleted = mDatabaseHelper.deleteCourse(cb.getText().toString());
                         if(deleted)
-                            ll.removeView(cb);
+                            cbs.add(cb);
                     }
                 }
+                for(CheckBox cb: cbs)
+                    ll.removeView(cb);
+                ((CheckBox) ll.getChildAt(0)).setChecked(false);
             }
         });
     }
@@ -122,6 +142,7 @@ public class EditCourse extends Activity {
     @Override
     public void onBackPressed() {
         Intent setIntent = new Intent(this,MainActivity.class);
+        setIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(setIntent);
     }
 
