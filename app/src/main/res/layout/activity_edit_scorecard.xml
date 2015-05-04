@@ -7,76 +7,41 @@
     android:orientation="vertical">
 
 
-    <RelativeLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:id="@+id/cs_title_container">
-
-        <me.grantland.widget.AutofitTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/edit_scorecards_title"
-            android:id="@+id/edit_scorecards_title"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:textSize="50sp"
-            android:gravity="center_horizontal"
-            android:maxLines="2" />
-    </RelativeLayout>
-
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/cs_checkbox_scroll"
-        android:layout_below="@+id/cs_title_container">
-
-    </ScrollView>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/cs_button_scroll"
-        android:layout_alignParentBottom="true">
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/ps_button_container">
-
-            <Button
-                android:layout_width="210dp"
-                android:layout_height="wrap_content"
-                android:text="Delete"
-                android:id="@+id/ps_next"
-                android:layout_gravity="center_horizontal"
-                android:importantForAccessibility="yes" />
-        </LinearLayout>
-    </ScrollView>
-
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/ps_checkbox_container"
-        android:layout_above="@+id/cs_button_scroll"
-        android:layout_below="@+id/cs_checkbox_scroll">
+        android:id="@+id/es_checkbox_container"
+        android:layout_above="@+id/ps_button_container">
 
         <LinearLayout
             android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="start"
-                android:id="@+id/edit_scorecards_checkbox" />
-        </LinearLayout>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:id="@+id/ec_checkbox" />
     </ScrollView>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ps_button_container"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Resume"
+            android:id="@+id/es_resume" />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete"
+            android:id="@+id/es_delete"
+            android:layout_gravity="center_horizontal"
+            android:importantForAccessibility="yes" />
+    </LinearLayout>
 
 </RelativeLayout>
 
