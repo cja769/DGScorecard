@@ -49,6 +49,13 @@ public class MainActivity extends Activity {
             }
         });
 
+        findViewById(R.id.main_stats).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendMessage(PlayerStats.class);
+            }
+        });
+
 //        findViewById(R.id.main_reset_db).setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {

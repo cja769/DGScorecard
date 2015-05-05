@@ -79,8 +79,10 @@ public class ManualCourseAdd extends Activity {
                 String courseName = getIntent().getStringExtra(EditCourse.EXTRA_MESSAGE);
                 title.setText(courseName);
                 newCourse = getIntent().getBooleanExtra(EditCourse.NEW_COURSE, true);
-                moreHoles.setEnabled(false);
-                lessHoles.setEnabled(false);
+                if(!newCourse) {
+                    moreHoles.setEnabled(false);
+                    lessHoles.setEnabled(false);
+                }
                 if(!newCourse)
                     allPars = getCoursePars(courseName);
             }

@@ -116,6 +116,7 @@ public class Player implements Comparable<Player> {
     public String getValScore() {return scoreField.getText()+"";}
     public String getValPutts() {return puttField.getText()+"";}
     public String getPID() {return Integer.toString(pID);}
+    public int getIntPID() { return pID;}
 
     @Override
     public int compareTo(Player other){

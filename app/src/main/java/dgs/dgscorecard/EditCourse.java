@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,12 @@ public class EditCourse extends Activity {
         mCourse = mDatabaseHelper.getAllCourseItems(this);
 
         LinearLayout ll = (LinearLayout) findViewById(R.id.edit_courses_checkbox);
+        RelativeLayout rl = (RelativeLayout) findViewById(R.id.ec_rel);
+        EditText et = (EditText) findViewById(R.id.ec_edit_text_add);
+        et.setNextFocusUpId(R.id.ec_edit_text_add);
+        et.setNextFocusLeftId(R.id.ec_edit_text_add);
+        rl.setFocusable(true);
+        rl.setFocusableInTouchMode(true);
         CheckBox cb = new CheckBox(this);
         cb.setText("Select All");
         cb.setOnClickListener(new View.OnClickListener() {

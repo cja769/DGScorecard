@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,12 @@ public class EditPlayer extends Activity {
         mPlayer = mDatabaseHelper.getAllPlayerItems(this);
 
         LinearLayout ll = (LinearLayout) findViewById(R.id.edit_player_checkbox);
+        EditText et = (EditText) findViewById(R.id.ep_edit_text_add);
+        RelativeLayout rl = (RelativeLayout) findViewById(R.id.ep_rel);
+        et.setNextFocusUpId(R.id.ep_edit_text_add);
+        et.setNextFocusLeftId(R.id.ep_edit_text_add);
+        rl.setFocusable(true);
+        rl.setFocusableInTouchMode(true);
         CheckBox cb = new CheckBox(this);
         cb.setText("Select All");
         cb.setOnClickListener(new View.OnClickListener() {

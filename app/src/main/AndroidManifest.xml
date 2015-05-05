@@ -60,6 +60,14 @@
             android:name=".ResumeScorecard"
             android:label="@string/title_activity_resume_scorecard" >
         </activity>
+        <activity
+            android:name=".PlayerStats"
+            android:label="@string/title_activity_player_stats" >
+        </activity>
+        <activity
+            android:name=".ViewPlayerStats"
+            android:label="@string/title_activity_view_player_stats" >
+        </activity>
     </application>
 
 </manifest>

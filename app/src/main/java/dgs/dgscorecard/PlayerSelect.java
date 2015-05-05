@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import java.util.ArrayList;
@@ -43,10 +44,13 @@ public class PlayerSelect extends Activity {
         mDatabaseHelper = new DGSDatabaseHelper(this);
         mPlayer = mDatabaseHelper.getAllPlayerItems(this);
 
-        mPrefs = getSharedPreferences("PlayerSelect_prefs", MODE_PRIVATE);
+        EditText et = (EditText)findViewById(R.id.ps_enter_name);
+        RelativeLayout rl = (RelativeLayout) findViewById(R.id.ps_rel);
+        et.setNextFocusUpId(R.id.ps_enter_name);
+        et.setNextFocusLeftId(R.id.ps_enter_name);
+        rl.setFocusable(true);
+        rl.setFocusableInTouchMode(true);
 
-        //restore player count
-        num_players = mPrefs.getInt("num_players", 0);
         LinearLayout ll = (LinearLayout) findViewById(R.id.ps_checkbox_field);
         for(int i = 0; i < mPlayer.size(); i++) {
             CheckBox cb = new CheckBox(this);
@@ -98,12 +102,6 @@ public class PlayerSelect extends Activity {
     protected void onStop(){
         super.onStop();
 
-        //Save Player Names
-        SharedPreferences.Editor ed = mPrefs.edit();
-        ed.putInt("num_players", num_players);
-        //if(prevPlayers.size() > 0)
-            //ed.putStringSet("mPlayerNames", new HashSet<String>(prevPlayers));
-        ed.apply();
     }
 
     private void addPlayerToList(){
@@ -116,14 +114,12 @@ public class PlayerSelect extends Activity {
         CheckBox cb = new CheckBox(this);
         cb.setText(newName);
         cb.setChecked(true);
-        ll.addView(cb);
         System.out.println(newName);
-        Player newPlayer = new Player(newName, newName, "0", "0","0", "0", num_players, this);
-        ++num_players;
-        ArrayList<Player> players = new ArrayList<>();
-        players.add(newPlayer);
-        mDatabaseHelper.addPlayerItems(players);
-        //System.out.println(num_players);
+        Player newPlayer = new Player(newName, -1);
+        long id = mDatabaseHelper.addPlayerItem(newPlayer);
+        if(id != -1)
+            ll.addView(cb);
+
         nameEditText.setText("");
 
     }

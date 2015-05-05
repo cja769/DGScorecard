@@ -25,6 +25,7 @@ public class EditScorecard extends Activity {
     private LinearLayout checkBoxLayout;
     private Map<CheckBox, Scorecard> ids;
     public static String EXTRA_MESSAGE = "edit_scorecard_id";
+    public static String EDIT_SCORECARD = "edit_scorecard";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +42,9 @@ public class EditScorecard extends Activity {
             @Override
             public void onClick(View v) {
                 boolean check = ((CheckBox) v).isChecked();
-                for(int i = 0; i < checkBoxLayout.getChildCount(); i++)
+                for(int i = 0; i < checkBoxLayout.getChildCount(); i++) {
                     ((CheckBox) checkBoxLayout.getChildAt(i)).setChecked(check);
+                }
             }
         });
         checkBoxLayout.addView(cb);
@@ -95,6 +97,20 @@ public class EditScorecard extends Activity {
             }
         });
 
+        findViewById(R.id.es_view).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean cont = true;
+                for(int i = 1; i < checkBoxLayout.getChildCount() && cont; i++){
+                    CheckBox cb = (CheckBox) checkBoxLayout.getChildAt(i);
+                    if(cb.isChecked()){
+                        cont = false;
+                        viewScorecard(ids.get(cb).getID());
+                    }
+                }
+            }
+        });
+
     }
 
 
@@ -120,10 +136,25 @@ public class EditScorecard extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+//    private void unclickBoxes(View v){
+//        for(int i = 0; i < checkBoxLayout.getChildCount(); i++){
+//            CheckBox cb = (CheckBox) checkBoxLayout.getChildAt(i);
+//            if(!cb.equals(v))
+//                cb.setChecked(false);
+//        }
+//    }
+
     private void resumeScorecard(int id){
         Intent intent = new Intent(this, ScorecardActivity.class);
         intent.putExtra(EXTRA_MESSAGE, id);
         startActivity(intent);
         this.finish();
+    }
+
+    private void viewScorecard(int id) {
+        Intent intent = new Intent(this, ScorecardSummary.class);
+        intent.putExtra(ScorecardActivity.EXTRA_MESSAGE,id);
+        intent.putExtra(EDIT_SCORECARD, true);
+        startActivity(intent);
     }
 }

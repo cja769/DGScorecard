@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import java.util.List;
 
@@ -25,6 +26,14 @@ public class CourseSelect extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_select);
+
+
+        EditText et = (EditText)findViewById(R.id.cs_enter_name);
+        RelativeLayout rl = (RelativeLayout) findViewById(R.id.cs_rel);
+        et.setNextFocusUpId(R.id.cs_enter_name);
+        et.setNextFocusLeftId(R.id.cs_enter_name);
+        rl.setFocusable(true);
+        rl.setFocusableInTouchMode(true);
 
         (findViewById(R.id.cs_start)).setOnClickListener(new View.OnClickListener() {
             @Override

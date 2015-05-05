@@ -358,6 +358,116 @@ public class DGSDatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public int getPlayerHandicap(Player p){
+        SQLiteDatabase db = getReadableDatabase();
+
+        int id = p.getIntPID();
+        int totalOverUnder = 0;
+        int totalCards = 0;
+        Cursor cursor2 = db.query(PLAYER_SCORES, new String[]{COLUMN_SCSCORES, COLUMN_SID}, COLUMN_SPLAYERID + " = " + id, null, null, null, null);
+
+        for(cursor2.moveToFirst(); !cursor2.isAfterLast(); cursor2.moveToNext()){
+            totalCards++;
+            Cursor cursor3 = db.query(SCORECARD_ITEMS, new String[]{COLUMN_SCOURSEID}, COLUMN_ID + " = " + cursor2.getInt(1), null, null, null, null);
+            cursor3.moveToFirst();
+            Cursor cursor4 = db.query(COURSE_ITEMS, new String[] {COLUMN_INDIVPARS}, COLUMN_ID + " = " + cursor3.getInt(0), null, null, null, null);
+            cursor4.moveToFirst();
+            ArrayList<Integer> scores = stringToList(cursor2.getString(0));
+            ArrayList<Integer> pars = stringToList(cursor4.getString(0));
+            int score = 0;
+            for(Integer s: scores)
+                score += s;
+            int par = 0;
+            for(Integer hole: pars){
+                par += hole;
+            }
+            Log.v("Score",score+"");
+            Log.v("total", par+"");
+            totalOverUnder += score - par;
+        }
+
+        return totalOverUnder/totalCards;
+    }
+
+    public int getPlayerRoundsPlayed(Player p) {
+        SQLiteDatabase db = getReadableDatabase();
+        int id = p.getIntPID();
+        Cursor cursor = db.query(PLAYER_SCORES, new String[] {COLUMN_ID}, COLUMN_SPLAYERID + " = " + id, null, null, null, null);
+        if(cursor == null)
+            return -1;
+        cursor.moveToFirst();
+        return cursor.getCount();
+    }
+
+    public double getPlayerAveragePutts(Player p){
+        SQLiteDatabase db = getReadableDatabase();
+        int id = p.getIntPID();
+        Cursor cursor2 = db.query(PLAYER_SCORES, new String[] {COLUMN_SID}, COLUMN_SPLAYERID + " = " + id, null, null, null, null);
+        if(cursor2 == null)
+            return -1;
+        int total =  getPlayerTotalPutts(p);
+        double holes = 0;
+        for(cursor2.moveToFirst(); !cursor2.isAfterLast(); cursor2.moveToNext()) {
+            Cursor cursor3 = db.query(SCORECARD_ITEMS, new String[]{COLUMN_SCOURSEID}, COLUMN_ID + " = " + cursor2.getInt(0), null, null, null, null);
+            if (cursor3 == null)
+                return -1;
+            cursor3.moveToFirst();
+            Cursor cursor4 = db.query(COURSE_ITEMS, new String[]{COLUMN_HOLES}, COLUMN_ID + " = " + cursor3.getInt(0), null, null, null, null);
+            if (cursor4 == null)
+                return -1;
+            cursor4.moveToFirst();
+            Log.v("Course Holes", cursor4.getInt(0)+"");
+            holes += cursor4.getInt(0);
+        }
+        Log.v("Total Holes", holes+"");
+        return Math.round((total/holes) * 100.0) / 100.0;
+    }
+
+    public int getPlayerTotalPutts(Player p) {
+        SQLiteDatabase db = getReadableDatabase();
+        int id = p.getIntPID();
+        Cursor cursor2 = db.query(PLAYER_SCORES, new String[] {COLUMN_SCPUTTS}, COLUMN_SPLAYERID + " = " + id, null, null, null, null);
+        if(cursor2 == null)
+            return -1;
+        int totalPutts = 0;
+        for(cursor2.moveToFirst(); !cursor2.isAfterLast(); cursor2.moveToNext()) {
+            ArrayList<Integer> putts = stringToList(cursor2.getString(0));
+            for(Integer putt: putts) {
+                Log.v("Putt", putt+"");
+                totalPutts += putt;
+            }
+        }
+        Log.v("Total Putt", totalPutts+"");
+        return totalPutts;
+    }
+
+    public double getPlayerAverageScore(Player p) {
+        SQLiteDatabase db = getReadableDatabase();
+        int id = p.getIntPID();
+        Cursor cursor2 = db.query(PLAYER_SCORES, new String[] {COLUMN_SID}, COLUMN_SPLAYERID + " = " + id, null, null, null, null);
+        if(cursor2 == null)
+            return -1;
+        int total =  getPlayerTotalScore(p);
+        double rounds = getPlayerRoundsPlayed(p);
+        return Math.round((total/rounds) * 100.0) / 100.0;
+    }
+
+    public int getPlayerTotalScore(Player p) {
+        SQLiteDatabase db = getReadableDatabase();
+        int id = p.getIntPID();
+        Cursor cursor2 = db.query(PLAYER_SCORES, new String[] {COLUMN_SCSCORES}, COLUMN_SPLAYERID + " = " + id, null, null, null, null);
+        if(cursor2 == null)
+            return -1;
+        int totalScore = 0;
+        for(cursor2.moveToFirst(); !cursor2.isAfterLast(); cursor2.moveToNext()) {
+            ArrayList<Integer> scores = stringToList(cursor2.getString(0));
+            for(Integer score: scores) {
+                totalScore += score;
+            }
+        }
+        return totalScore;
+    }
+
     public boolean deletePlayer(String name){
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(PLAYER_ITEMS,new String[]{COLUMN_ID},COLUMN_NAME + " = '" + name + "'", null, null, null, null);
@@ -541,28 +651,24 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
     public void addPlayerItems(List<Player> items) {
         if (items != null && items.size() > 0) {
             // obtain a readable database
-            SQLiteDatabase db = getWritableDatabase();
-
             for (Player item : items) {
-                addPlayerItem(db, item);
+                addPlayerItem(item);
             }
 
             // close the database connection
-            db.close();
-        }
+            //
+          }
     }
 
     public void addCourseItems(List<Course> items) {
         if (items != null && items.size() > 0) {
             // obtain a readable database
-            SQLiteDatabase db = getWritableDatabase();
 
             for (Course item : items) {
-                addCourseItem(db, item);
+                addCourseItem(item);
             }
 
             // close the database connection
-            db.close();
         }
     }
 
@@ -607,14 +713,16 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
     /**
      * Add a new item
      */
-    private void addPlayerItem(SQLiteDatabase db, Player item) {
+    public long addPlayerItem(Player item) {
         // prepare values
+        SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, item.getName());
 
         // add the row
-        db.insert(PLAYER_ITEMS, null, values);
+        long id = db.insert(PLAYER_ITEMS, null, values);
         db.close();
+        return id;
 
     }
 
@@ -622,12 +730,15 @@ Once a scorecard is selected, its players and scores will be gotten from the dat
     /**
      * Add a new item
      */
-    private void addCourseItem(SQLiteDatabase db, Course item) {
+    public long addCourseItem(Course item) {
+
+        SQLiteDatabase db = getWritableDatabase();
 
         ContentValues values = setCourseValues(item);
         // add the row
-        db.insert(COURSE_ITEMS, null, values);
+        long id = db.insert(COURSE_ITEMS, null, values);
         db.close();
+        return id;
 
     }
 

@@ -18,5 +18,7 @@
     <string name="edit_players_title">Select players to delete</string>
     <string name="edit_courses_title">Select course to delete</string>
     <string name="edit_scorecards_title">Select Scorecard</string>
+    <string name="title_activity_player_stats">PlayerStats</string>
+    <string name="title_activity_view_player_stats">ViewPlayerStats</string>
 
 </resources>

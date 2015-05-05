@@ -35,6 +35,7 @@ public class ScorecardSummary extends Activity {
     private ArrayList<TextView> allTextViews;
     private Map<Player, ArrayList<Integer>> allScores;
     private Scorecard mScorecard;
+    private boolean isOnlyEdit;
 
 
     @Override
@@ -50,6 +51,7 @@ public class ScorecardSummary extends Activity {
         linLayout.removeAllViews();
         allTextViews = new ArrayList<TextView>();
         mScorecard = (new DGSDatabaseHelper(this)).getFullScorecard(getIntent().getIntExtra(ScorecardActivity.EXTRA_MESSAGE,-1),this);
+        isOnlyEdit = getIntent().getBooleanExtra(EditScorecard.EDIT_SCORECARD,false);
         allScores = mScorecard.getScores();
         String str = "";
         for(Player p: allScores.keySet()) {
@@ -108,7 +110,10 @@ public class ScorecardSummary extends Activity {
         (findViewById(R.id.ss_finish)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToMain();
+                if(isOnlyEdit)
+                    goToEdit();
+                else
+                    goToMain();
             }
         });
 
@@ -161,9 +166,8 @@ public class ScorecardSummary extends Activity {
 //        Log.v("Stuff",getFilesDir().getAbsolutePath());
 //    }
 
-    private void sendMessage(Class c) {
-        Intent intent = new Intent(this, c);
-        startActivity(intent);
+    private void goToEdit() {
+        this.finish();
     }
 
     private void goToMain(){
