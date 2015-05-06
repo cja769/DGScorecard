@@ -34,7 +34,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="Handicap"
-                        android:id="@+id/textView24" />
+                        android:id="@+id/vps_handicap_name" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -47,7 +47,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Large Text"
+                        android:text="-"
                         android:id="@+id/vps_handicap"
                         android:layout_gravity="right" />
                 </LinearLayout>
@@ -70,7 +70,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="Average Putts"
-                        android:id="@+id/textView21" />
+                        android:id="@+id/vps_average_putt_name" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -83,7 +83,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Large Text"
+                        android:text="-"
                         android:id="@+id/vps_avg_putts"
                         android:layout_gravity="right" />
                 </LinearLayout>
@@ -94,7 +94,8 @@
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="20dp">
+                android:paddingBottom="20dp"
+                android:id="@+id/vps_avg_score_ll">
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -107,7 +108,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="Average Score"
-                        android:id="@+id/textView23" />
+                        android:id="@+id/vps_average_score_name" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -120,7 +121,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Large Text"
+                        android:text="-"
                         android:id="@+id/vps_average_score"
                         android:layout_gravity="right" />
                 </LinearLayout>
@@ -143,7 +144,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="Rounds Played"
-                        android:id="@+id/textView24" />
+                        android:id="@+id/vps_rounds_played_name" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -179,7 +180,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="Total Putts"
-                        android:id="@+id/textView26" />
+                        android:id="@+id/vps_total_putts_name" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -215,7 +216,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="Total Score"
-                        android:id="@+id/textView26" />
+                        android:id="@+id/vps_total_score_name" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -233,6 +234,79 @@
                         android:layout_gravity="right" />
                 </LinearLayout>
             </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="20dp" >
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="Total Holes"
+                        android:id="@+id/vps_total_holes_name" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="-"
+                        android:id="@+id/vps_total_holes"
+                        android:layout_gravity="right" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="20dp" >
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="Most Played"
+                        android:id="@+id/vps_most_played_name" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="-"
+                        android:id="@+id/vps_most_played"
+                        android:layout_gravity="right" />
+                </LinearLayout>
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 

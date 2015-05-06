@@ -1,6 +1,7 @@
 package dgs.dgscorecard;
 
 import android.app.Activity;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -21,18 +22,30 @@ public class ViewPlayerStats extends Activity {
         dbHelp = new DGSDatabaseHelper(this);
         String name = getIntent().getStringExtra(PlayerStats.EXTRA_MESSAGE);
         player = dbHelp.getPlayerByName(name);
-        int handicap = dbHelp.getPlayerHandicap(player);
-        double averagePutts = dbHelp.getPlayerAveragePutts(player);
-        int totalPutts = dbHelp.getPlayerTotalPutts(player);
-        int rounds = dbHelp.getPlayerRoundsPlayed(player);
-        int totalScore = dbHelp.getPlayerTotalScore(player);
-        double averageScore = dbHelp.getPlayerAverageScore(player);
-        ((TextView) findViewById(R.id.vps_handicap)).setText(handicap+"");
-        ((TextView) findViewById(R.id.vps_avg_putts)).setText(averagePutts+"");
-        ((TextView) findViewById(R.id.vps_total_putts)).setText(totalPutts+"");
-        ((TextView) findViewById(R.id.vps_rounds_played)).setText(rounds+"");
-        ((TextView) findViewById(R.id.vps_total_score)).setText(totalScore+"");
-        ((TextView) findViewById(R.id.vps_average_score)).setText(averageScore+"");
+        Integer handicap = dbHelp.getPlayerHandicap(player);
+        Double averagePutts = dbHelp.getPlayerAveragePutts(player);
+        Integer totalPutts = dbHelp.getPlayerTotalPutts(player);
+        Integer rounds = dbHelp.getPlayerRoundsPlayed(player);
+        Integer totalScore = dbHelp.getPlayerTotalScore(player);
+        Double averageScore = dbHelp.getPlayerAverageScore(player);
+        String mostPlayed = dbHelp.getPlayedMostPlayed(player);
+        Integer totalHoles = dbHelp.getHolesPlayed(player);
+        if(handicap != null)
+            ((TextView) findViewById(R.id.vps_handicap)).setText(handicap+"");
+        if(averagePutts != null)
+            ((TextView) findViewById(R.id.vps_avg_putts)).setText(averagePutts+"");
+        if(totalPutts != null)
+            ((TextView) findViewById(R.id.vps_total_putts)).setText(totalPutts+"");
+        if(rounds != null)
+            ((TextView) findViewById(R.id.vps_rounds_played)).setText(rounds+"");
+        if(totalScore != null)
+            ((TextView) findViewById(R.id.vps_total_score)).setText(totalScore+"");
+        if(averageScore != null)
+            ((TextView) findViewById(R.id.vps_average_score)).setText(averageScore+"");
+        if(mostPlayed != null)
+            ((TextView) findViewById(R.id.vps_most_played)).setText(mostPlayed);
+        if(totalHoles != null)
+            ((TextView) findViewById(R.id.vps_total_holes)).setText(totalHoles+"");
 
     }
 
